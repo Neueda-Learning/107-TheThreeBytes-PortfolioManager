@@ -40,13 +40,9 @@ public class DashboardService {
         Map<String, BigDecimal> livePriceByTicker = items.stream()
                 .map(PortfolioItem::getTicker)
                 .distinct()
-                .collect(Collectors.toMap(
-                        ticker -> ticker,
-                        ticker -> {
-                            var r = priceService.getPrice(ticker);
-                            return r.currentPrice();
-                        }
-                ));
+                .map(ticker -> new java.util.AbstractMap.SimpleEntry<>(ticker, priceService.getPrice(ticker).currentPrice()))
+                .filter(e -> e.getValue() != null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         BigDecimal totalCostBasis = BigDecimal.ZERO;
         BigDecimal totalCurrentValue = BigDecimal.ZERO;
