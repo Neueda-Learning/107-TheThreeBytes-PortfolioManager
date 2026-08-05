@@ -2,11 +2,10 @@ package com.example.hsbcproject.dto;
 
 import java.math.BigDecimal;
 
-public record LivePriceResponse(
-        String ticker,
+public record StockQuoteResponse(
+        String symbol,
+        String companyName,
         BigDecimal currentPrice,
-        BigDecimal change,
-        BigDecimal changePercent,
+        String sector,
         String errorMessage) {
 }
-

@@ -18,3 +18,4 @@ public record PerformanceItemResponse(
         LocalDate purchaseDate,
         long holdingDays) {
 }
+
