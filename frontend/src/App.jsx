@@ -9,6 +9,7 @@ import Transactions from './pages/Transactions'
 import Watchlist from './pages/Watchlist'
 import Dividends from './pages/Dividends'
 import Tax from './pages/Tax'
+import MarketPrices from './pages/MarketPrices'
 import Profile from './pages/Profile'
 import Support from './pages/Support'
 import { getApiErrorMessage, getInvestments } from './services/investmentService'
@@ -50,6 +51,7 @@ function App() {
           <Route path="/watchlist" element={<Watchlist />} />
           <Route path="/dividends" element={<Dividends />} />
           <Route path="/tax" element={<Tax />} />
+          <Route path="/market-prices" element={<MarketPrices />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/support" element={<Support />} />
         </Routes>

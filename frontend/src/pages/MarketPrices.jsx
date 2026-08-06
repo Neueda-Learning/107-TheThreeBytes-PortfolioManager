@@ -17,7 +17,7 @@ import { currency, formatPercent } from '../utils/formatters'
 function formatDateLabel(dateValue, timeframe) {
   const date = new Date(`${dateValue}T00:00:00`)
   if (timeframe === 'DAILY') {
-    return date.toLocaleDateString('en-US', { hour: '2-digit', minute: '2-digit' })
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
   }
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
@@ -349,4 +349,5 @@ export default function MarketPrices() {
     </div>
   )
 }
+
 

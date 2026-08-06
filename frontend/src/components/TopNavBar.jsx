@@ -100,6 +100,7 @@ export default function TopNavBar({ holdings, onAddInvestment, onSearch }) {
             </button>
             {isMoreOpen ? (
               <div className="absolute right-0 mt-2 w-44 rounded-lg border border-slate-200 bg-white p-2 shadow-sm">
+                <button type="button" onClick={() => { navigate('/market-prices'); setIsMoreOpen(false) }} className="flex w-full items-center rounded-md px-3 py-2 text-left text-sm text-slate-600 hover:bg-slate-50">Market Prices</button>
                 <button type="button" onClick={() => { navigate('/watchlist'); setIsMoreOpen(false) }} className="flex w-full items-center rounded-md px-3 py-2 text-left text-sm text-slate-600 hover:bg-slate-50">View Watchlist</button>
                 <button type="button" onClick={() => { onAddInvestment?.(); setIsMoreOpen(false) }} className="flex w-full items-center rounded-md bg-slate-900 px-3 py-2 text-left text-sm font-semibold text-white hover:bg-slate-800">Add Investment</button>
               </div>
@@ -107,6 +108,13 @@ export default function TopNavBar({ holdings, onAddInvestment, onSearch }) {
           </div>
 
           <div className="hidden items-center gap-2 sm:flex">
+            <button
+              type="button"
+              onClick={() => navigate('/market-prices')}
+              className="pm-control rounded-lg px-3 py-2 text-sm font-medium transition"
+            >
+              Market Prices
+            </button>
             <button
               type="button"
               onClick={() => navigate('/watchlist')}
