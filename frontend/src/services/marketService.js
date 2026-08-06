@@ -6,7 +6,7 @@ export const MARKET_ASSET_TYPES = ['STOCK', 'BOND', 'CRYPTO']
 export const MARKET_TIMEFRAMES = ['DAILY', 'WEEKLY', 'MONTHLY']
 
 const TIMEFRAME_TO_DAYS = {
-  DAILY: 1,
+  DAILY: 2,
   WEEKLY: 7,
   MONTHLY: 30,
 }
@@ -97,4 +97,5 @@ export async function getMarketPriceHistory(assetType, ticker, timeframe) {
     isLimitedToMonth: assetType !== 'STOCK',
   }
 }
+
 

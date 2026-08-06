@@ -2,6 +2,7 @@ package com.example.hsbcproject.controller;
 
 import com.example.hsbcproject.domain.AssetType;
 import com.example.hsbcproject.dto.LivePriceResponse;
+import com.example.hsbcproject.dto.MarketInstrumentResponse;
 import com.example.hsbcproject.dto.StockCandleResponse;
 import com.example.hsbcproject.service.DummyMarketDataStore;
 import com.example.hsbcproject.service.PriceService;
@@ -60,5 +61,14 @@ public class PriceController {
     @Operation(summary = "All 30-day dummy data grouped by category: stocks, bonds, crypto (12 tickers each)")
     public Map<String, List<DummyMarketDataStore.InstrumentSeries>> getAllDummyData() {
         return dummyMarketDataStore.getAllSeries();
+    }
+
+    @GetMapping("/instruments")
+    @Operation(summary = "Search market instruments by asset type and optional name/ticker query")
+    public List<MarketInstrumentResponse> getInstruments(
+            @RequestParam AssetType assetType,
+            @RequestParam(required = false) String query,
+            @RequestParam(defaultValue = "20") int limit) {
+        return priceService.searchInstruments(assetType, query, limit);
     }
 }

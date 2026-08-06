@@ -2,14 +2,18 @@ package com.example.hsbcproject.service;
 
 import com.example.hsbcproject.domain.AssetType;
 import com.example.hsbcproject.dto.LivePriceResponse;
+import com.example.hsbcproject.dto.MarketInstrumentResponse;
 import com.example.hsbcproject.dto.StockCandleResponse;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Central price resolution service.
@@ -22,6 +26,47 @@ import java.util.Optional;
  */
 @Service
 public class PriceService {
+
+    private static final Map<AssetType, Map<String, String>> INSTRUMENT_NAMES = Map.of(
+            AssetType.STOCK, Map.ofEntries(
+                    Map.entry("AAPL", "Apple Inc."),
+                    Map.entry("MSFT", "Microsoft Corporation"),
+                    Map.entry("GOOGL", "Alphabet Inc."),
+                    Map.entry("AMZN", "Amazon.com Inc."),
+                    Map.entry("TSLA", "Tesla Inc."),
+                    Map.entry("NVDA", "NVIDIA Corporation"),
+                    Map.entry("JPM", "JPMorgan Chase & Co."),
+                    Map.entry("V", "Visa Inc."),
+                    Map.entry("DIS", "The Walt Disney Company"),
+                    Map.entry("NFLX", "Netflix Inc."),
+                    Map.entry("META", "Meta Platforms Inc."),
+                    Map.entry("KO", "The Coca-Cola Company")),
+            AssetType.BOND, Map.ofEntries(
+                    Map.entry("UST2Y", "US Treasury 2-Year Bond"),
+                    Map.entry("UST5Y", "US Treasury 5-Year Bond"),
+                    Map.entry("UST10Y", "US Treasury 10-Year Bond"),
+                    Map.entry("UST30Y", "US Treasury 30-Year Bond"),
+                    Map.entry("LQD", "iShares iBoxx Investment Grade Corporate Bond ETF"),
+                    Map.entry("HYG", "iShares iBoxx High Yield Corporate Bond ETF"),
+                    Map.entry("TLT", "iShares 20+ Year Treasury Bond ETF"),
+                    Map.entry("IEF", "iShares 7-10 Year Treasury Bond ETF"),
+                    Map.entry("BND", "Vanguard Total Bond Market ETF"),
+                    Map.entry("AGG", "iShares Core US Aggregate Bond ETF"),
+                    Map.entry("MUB", "iShares National Muni Bond ETF"),
+                    Map.entry("SHY", "iShares 1-3 Year Treasury Bond ETF")),
+            AssetType.CRYPTO, Map.ofEntries(
+                    Map.entry("BTC", "Bitcoin"),
+                    Map.entry("ETH", "Ethereum"),
+                    Map.entry("SOL", "Solana"),
+                    Map.entry("ADA", "Cardano"),
+                    Map.entry("XRP", "Ripple"),
+                    Map.entry("DOT", "Polkadot"),
+                    Map.entry("LINK", "Chainlink"),
+                    Map.entry("LTC", "Litecoin"),
+                    Map.entry("AVAX", "Avalanche"),
+                    Map.entry("DOGE", "Dogecoin"),
+                    Map.entry("BNB", "BNB"),
+                    Map.entry("MATIC", "Polygon")));
 
     private final DummyMarketDataStore dummyMarketDataStore;
     private final FinnhubClient finnhubClient;
@@ -118,6 +163,33 @@ public class PriceService {
                     return new StockCandleResponse(normalizedTicker, "DUMMY", candles);
                 })
                 .orElseGet(() -> new StockCandleResponse(normalizedTicker, "NOT_FOUND", List.of()));
+    }
+
+    // ── Instrument Search ───────────────────────────────────────────────────────
+
+    /**
+     * Returns a searchable catalog of instruments for one asset type.
+     * This keeps search metadata in the backend so UI components stay API-driven.
+     */
+    public List<MarketInstrumentResponse> searchInstruments(AssetType assetType, String query, int limit) {
+        AssetType type = assetType == null ? AssetType.STOCK : assetType;
+        Map<String, String> instruments = INSTRUMENT_NAMES.getOrDefault(type, Map.of());
+        String normalizedQuery = query == null ? "" : query.trim().toLowerCase();
+        int cappedLimit = Math.max(1, Math.min(limit, 50));
+
+        Stream<Map.Entry<String, String>> stream = instruments.entrySet().stream();
+        if (!normalizedQuery.isEmpty()) {
+            stream = stream.filter(entry -> {
+                String haystack = (entry.getKey() + " " + entry.getValue()).toLowerCase();
+                return haystack.contains(normalizedQuery);
+            });
+        }
+
+        return stream
+                .sorted(Comparator.comparing(Map.Entry::getKey))
+                .limit(cappedLimit)
+                .map(entry -> new MarketInstrumentResponse(entry.getKey(), entry.getValue(), type, "USD"))
+                .toList();
     }
 
     // ── Convenience: today's date as LocalDate ─────────────────────────────────
