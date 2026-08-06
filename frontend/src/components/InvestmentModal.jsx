@@ -12,6 +12,7 @@ const emptyForm = {
   sector: '',
   issuer: '',
   interestRate: '',
+  investmentAmount: '',
   maturityDate: '',
   quantity: '',
   purchasePrice: '',
@@ -111,8 +112,13 @@ function validate(form) {
 
   if (form.quantity === '' || form.quantity === null) {
     errors.quantity = 'Quantity is required'
-  } else if (!Number.isInteger(Number(form.quantity)) || Number(form.quantity) < 1) {
-    errors.quantity = 'Quantity must be a whole number of at least 1'
+  } else if (Number(form.quantity) <= 0) {
+    errors.quantity = 'Quantity must be greater than 0'
+  } else if (
+    form.assetType !== 'CRYPTO' &&
+    !Number.isInteger(Number(form.quantity))
+  ) {
+    errors.quantity = 'Quantity must be a whole number'
   }
 
   if (form.purchasePrice === '' || form.purchasePrice === null) {
@@ -213,6 +219,28 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
     setField(name, value)
   }
 
+const handleCryptoAmountChange = (event) => {
+  const amount = event.target.value
+
+  setForm((current) => {
+    const price = Number(current.purchasePrice)
+
+    return {
+      ...current,
+      investmentAmount: amount,
+      quantity:
+        amount && price > 0
+          ? (Number(amount) / price).toFixed(8)
+          : '',
+    }
+  })
+
+  setErrors((current) => ({
+    ...current,
+    quantity: undefined,
+  }))
+}
+
   const handleTypeChange = (assetType) => {
     setForm({ ...emptyForm, assetType, purchaseDate: form.purchaseDate || today() })
     setErrors({})
@@ -234,8 +262,19 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
       }
     } else if (form.assetType === 'CRYPTO') {
       const cryptoData = autofillCryptoData(item.ticker)
+
       if (cryptoData) {
-        setForm((current) => ({ ...current, ...cryptoData }))
+        setForm(current => ({
+          ...current,
+          ...cryptoData,
+          quantity:
+            current.investmentAmount && Number(cryptoData.purchasePrice) > 0
+              ? (
+                  Number(current.investmentAmount) /
+                  Number(cryptoData.purchasePrice)
+                ).toFixed(8)
+              : '',
+        }))
       }
     }
   }
@@ -250,8 +289,19 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
       }
     } else if (form.assetType === 'CRYPTO') {
       const cryptoData = autofillCryptoData(form.ticker)
+
       if (cryptoData) {
-        setForm((current) => ({ ...current, ...cryptoData }))
+        setForm(current => ({
+          ...current,
+          ...cryptoData,
+          quantity:
+            current.investmentAmount && Number(cryptoData.purchasePrice) > 0
+              ? (
+                  Number(current.investmentAmount) /
+                  Number(cryptoData.purchasePrice)
+                ).toFixed(8)
+              : '',
+        }))
       }
     }
   }
@@ -469,16 +519,49 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
               {form.assetType === 'BOND' ? 'Quantity / Units' : 'Quantity'}
               <InfoTooltip title="Quantity" description="Number of units or shares purchased in this investment." />
             </span>
-            <input
-              type="number"
-              min="1"
-              step="1"
-              name="quantity"
-              value={form.quantity}
-              onChange={handleChange}
-                className={`mt-1 w-full rounded-2xl border bg-[#111111] px-3 py-2 text-sm text-white ${
-                  errors.quantity ? 'border-rose-300' : 'border-slate-700'
-                }`}            />
+            {form.assetType === 'CRYPTO' ? (
+              <>
+                <label className="text-sm font-medium text-slate-700">
+                  <span>Investment Amount ($)</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={form.investmentAmount}
+                    onChange={handleCryptoAmountChange}
+                    className="mt-1 w-full rounded-2xl border border-slate-700 bg-[#111111] px-3 py-2 text-sm text-white"
+                  />
+                </label>
+
+                <label className="text-sm font-medium text-slate-700">
+                  <span>Quantity</span>
+                  <input
+                    type="number"
+                    value={form.quantity}
+                    readOnly
+                    className="mt-1 w-full rounded-2xl border border-slate-700 bg-[#111111] px-3 py-2 text-sm text-white"
+                  />
+                </label>
+              </>
+            ) : (
+              <label className="text-sm font-medium text-slate-700">
+                <span>Quantity</span>
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  name="quantity"
+                  value={form.quantity}
+                  onChange={handleChange}
+                  className={`mt-1 w-full rounded-2xl border bg-[#111111] px-3 py-2 text-sm text-white ${
+                    errors.quantity ? 'border-rose-300' : 'border-slate-700'
+                  }`}
+                />
+                {errors.quantity && (
+                  <p className="mt-1 text-xs text-rose-500">{errors.quantity}</p>
+                )}
+              </label>
+            )}
             {errors.quantity ? <p className="mt-1 text-xs text-rose-500">{errors.quantity}</p> : null}
           </label>
 

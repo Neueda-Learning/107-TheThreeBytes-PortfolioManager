@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import {useNavigate} from 'react-router-dom'
 import { Eye, Plus, RefreshCw, Search, Trash2, X } from 'lucide-react'
 import ConfirmDialog from '../components/ConfirmDialog'
 import {
@@ -13,6 +14,7 @@ import { tickerCatalog } from '../data/tickerCatalog'
 
 const ASSET_TYPES = ['STOCK', 'BOND', 'CRYPTO']
 const emptyForm = { ticker: '', assetType: 'STOCK' }
+
 
 function AddWatchlistModal({ isOpen, onClose, onSubmit }) {
   const [form, setForm] = useState(emptyForm)
@@ -124,6 +126,7 @@ export default function Watchlist() {
   const [error, setError] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [confirmDeleteId, setConfirmDeleteId] = useState(null)
+  const navigate = useNavigate()
 
   const loadPrices = async (watchlist) => {
     if (!watchlist.length) {
@@ -220,7 +223,15 @@ export default function Watchlist() {
               const isPositive = Number(live?.changePercent || 0) >= 0
 
               return (
-                <div key={item.id} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                <div
+                  key={item.id}
+                  onClick={() =>
+                    navigate(
+                      `/market-prices?symbol=${encodeURIComponent(item.ticker)}&type=${item.assetType}`
+                    )
+                  }
+                  className="cursor-pointer rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all hover:border-emerald-600 hover:shadow-lg"
+                >
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-semibold text-slate-900">{item.ticker}</p>

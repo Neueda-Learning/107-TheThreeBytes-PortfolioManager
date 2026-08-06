@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { RefreshCw, Search } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import AsyncState from '../components/AsyncState'
@@ -33,14 +34,37 @@ function ChartTooltipContent({ active, payload, label }) {
 }
 
 export default function MarketPrices() {
-  const [assetType, setAssetType] = useState('STOCK')
-  const [timeframe, setTimeframe] = useState('MONTHLY')
-  const [query, setQuery] = useState('')
+    const [searchParams] = useSearchParams()
+    const initialSymbol = searchParams.get('symbol')
+const [assetType, setAssetType] = useState(() => {
+  const type = searchParams.get('type')
+  return type || 'STOCK'
+})
+const [timeframe, setTimeframe] = useState('MONTHLY')
+const [query, setQuery] = useState(initialSymbol || '')
   const [selectedInstrument, setSelectedInstrument] = useState(null)
 
   const [suggestionsState, setSuggestionsState] = useState({ loading: false, error: '', data: [] })
   const [detailsState, setDetailsState] = useState({ loading: false, error: '', data: null })
   const [chartState, setChartState] = useState({ loading: false, error: '', data: null })
+
+    useEffect(() => {
+      if (!initialSymbol) return
+      if (suggestionsState.loading) return
+      if (!suggestionsState.data.length) return
+
+      const instrument =
+        suggestionsState.data.find(
+          (item) => item.ticker.toUpperCase() === initialSymbol.toUpperCase()
+        ) ||
+        suggestionsState.data.find(
+          (item) => item.name.toLowerCase() === initialSymbol.toLowerCase()
+        )
+
+      if (instrument) {
+        handleSelectInstrument(instrument)
+      }
+    }, [initialSymbol, suggestionsState.data])
 
   useEffect(() => {
     setSelectedInstrument(null)

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Pencil, X, TrendingDown } from 'lucide-react'
 import AsyncState from '../components/AsyncState'
 import ConfirmDialog from '../components/ConfirmDialog'
@@ -17,7 +18,7 @@ import {
 import { currency, formatPercent } from '../utils/formatters'
 
 const ASSET_TYPES = ['STOCK', 'BOND', 'CRYPTO']
-const emptyForm = { ticker: '', quantity: 1, assetType: 'STOCK', purchasePrice: '', purchaseDate: '' }
+const emptyForm = { ticker: '', quantity: 1, assetType: 'STOCK', purchasePrice: '', purchaseDate: '', investmentAmount: '' }
 const TICKER_PATTERN = /^[A-Za-z.]{1,10}$/
 
 function validateHoldingForm(form) {
@@ -30,8 +31,18 @@ function validateHoldingForm(form) {
   if (!form.assetType) {
     errors.assetType = 'Please select an asset type.'
   }
-  if (!Number.isInteger(Number(form.quantity)) || Number(form.quantity) < 1) {
-    errors.quantity = 'Quantity must be a whole number of at least 1.'
+  if (form.assetType === 'CRYPTO') {
+
+      if (!form.investmentAmount || Number(form.investmentAmount) <= 0) {
+          errors.investmentAmount = 'Investment amount must be greater than 0.'
+      }
+
+  } else {
+
+      if (!Number.isInteger(Number(form.quantity)) || Number(form.quantity) < 1) {
+          errors.quantity = 'Quantity must be a whole number of at least 1.'
+      }
+
   }
   if (form.purchasePrice === '' || Number(form.purchasePrice) <= 0) {
     errors.purchasePrice = 'Purchase price must be greater than 0.'
@@ -47,13 +58,18 @@ function HoldingModal({ isOpen, onClose, onSubmit, initialData, mode }) {
   const [errors, setErrors] = useState({})
   const [submitError, setSubmitError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [cryptoPrice, setCryptoPrice] = useState(null)
+  const [loadingPrice, setLoadingPrice] = useState(false)
 
   useEffect(() => {
     if (isOpen) {
+        setCryptoPrice(null)
+        setLoadingPrice(false)
       setForm(initialData ? {
         ticker: initialData.ticker,
         quantity: initialData.quantity,
         assetType: initialData.assetType,
+        investmentAmount: '',
         purchasePrice: initialData.purchasePrice,
         purchaseDate: initialData.purchaseDate,
       } : emptyForm)
@@ -62,6 +78,7 @@ function HoldingModal({ isOpen, onClose, onSubmit, initialData, mode }) {
       setIsSubmitting(false)
     }
   }, [isOpen, initialData])
+
 
   if (!isOpen) return null
   const dialogTitleId = mode === 'edit' ? 'edit-holding-title' : 'add-holding-title'
@@ -72,6 +89,81 @@ function HoldingModal({ isOpen, onClose, onSubmit, initialData, mode }) {
     setForm((prev) => ({ ...prev, [name]: name === 'quantity' ? Number(value) : value }))
     setErrors((prev) => ({ ...prev, [name]: undefined }))
   }
+    useEffect(() => {
+
+        if(form.assetType!=="CRYPTO")
+            return
+
+        if(!form.purchasePrice)
+            return
+
+        if(!form.investmentAmount)
+            return
+
+        const amount = parseFloat(form.investmentAmount)
+        const price = parseFloat(form.purchasePrice)
+
+        if(!amount || !price)
+            return
+
+        const quantity = amount / price
+
+        setForm(prev=>({
+
+            ...prev,
+
+            quantity:quantity.toFixed(8)
+
+        }))
+
+    },[
+        form.purchasePrice,
+        form.investmentAmount,
+        form.assetType
+    ])
+
+useEffect(() => {
+
+    if (form.assetType !== 'CRYPTO')
+        return
+
+    if (!form.ticker || form.ticker.length < 2)
+        return
+
+    const loadPrice = async () => {
+
+        try {
+
+            setLoadingPrice(true)
+
+            const response = await getPrice(form.ticker.toUpperCase())
+
+            setCryptoPrice(response.currentPrice)
+
+            setForm(prev => ({
+                ...prev,
+                purchasePrice: response.currentPrice
+            }))
+
+        } catch {
+
+            setCryptoPrice(null)
+            setForm(prev => ({
+                ...prev,
+                purchasePrice: ''
+            }))
+
+        } finally {
+
+            setLoadingPrice(false)
+
+        }
+
+    }
+
+    loadPrice()
+
+}, [form.ticker, form.assetType])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -85,7 +177,7 @@ function HoldingModal({ isOpen, onClose, onSubmit, initialData, mode }) {
       ...form,
       ticker: form.ticker.trim().toUpperCase(),
       purchasePrice: parseFloat(form.purchasePrice),
-      quantity: parseInt(form.quantity, 10),
+      quantity: Number(form.quantity),
     })
     setIsSubmitting(false)
 
@@ -131,11 +223,102 @@ function HoldingModal({ isOpen, onClose, onSubmit, initialData, mode }) {
             </select>
             {errors.assetType ? <p className="mt-1 text-xs text-rose-500">{errors.assetType}</p> : null}
           </label>
-          <label className="text-sm font-medium text-slate-700">
-            Quantity
-            <input required type="number" min="1" name="quantity" value={form.quantity} onChange={handleChange} className={`mt-1 w-full rounded-2xl border px-3 py-2 text-sm ${errors.quantity ? 'border-rose-300' : 'border-slate-200'}`} />
-            {errors.quantity ? <p className="mt-1 text-xs text-rose-500">{errors.quantity}</p> : null}
-          </label>
+            {form.assetType === 'CRYPTO' ? (
+              <label className="text-sm font-medium text-slate-700">
+                Investment Amount ($)
+                <input
+                  required
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  name="investmentAmount"
+                  value={form.investmentAmount}
+                  onChange={handleChange}
+                  className={`mt-1 w-full rounded-2xl border bg-[#111111] px-3 py-2 text-sm text-white ${
+                    errors.investmentAmount ? 'border-rose-300' : 'border-slate-700'
+                  }`}
+                />
+
+                {errors.investmentAmount ? (
+                  <p className="mt-1 text-xs text-rose-500">
+                    {errors.investmentAmount}
+                  </p>
+                ) : null}
+
+                <div className="mt-3">
+                  <label className="text-sm font-medium text-slate-300">
+                    Coins You'll Receive
+                  </label>
+
+                  <input
+                    readOnly
+                    value={form.quantity}
+                    className="mt-1 w-full rounded-2xl border border-slate-700 bg-[#202020] px-3 py-2 text-sm text-white"
+                  />
+                </div>
+                {form.quantity && (
+                  <p className="mt-2 text-sm text-emerald-400">
+                    You'll receive approximately{" "}
+                    <strong>{Number(form.quantity).toLocaleString(undefined, {
+                      maximumFractionDigits: 8,
+                    })}</strong>{" "}
+                    {form.ticker.toUpperCase()}
+                  </p>
+                )}
+              </label>
+            ) : (
+              <label className="text-sm font-medium text-slate-700">
+                Quantity
+                <input
+                  required
+                  type="number"
+                  min="1"
+                  name="quantity"
+                  value={form.quantity}
+                  onChange={handleChange}
+                  className={`mt-1 w-full rounded-2xl border bg-[#111111] px-3 py-2 text-sm text-white ${
+                    errors.quantity ? 'border-rose-300' : 'border-slate-700'
+                  }`}
+                />
+                {errors.quantity ? (
+                  <p className="mt-1 text-xs text-rose-500">
+                    {errors.quantity}
+                  </p>
+                ) : null}
+              </label>
+            )}
+            {form.assetType === "CRYPTO" ? (
+
+            <label className="text-sm font-medium text-slate-700">
+
+            Current Price
+
+            <input
+
+            readOnly
+
+            value={
+                loadingPrice
+                    ? "Fetching live market price..."
+                    : cryptoPrice != null
+                        ? `$${Number(cryptoPrice).toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                          })}`
+                        : ""
+            }
+
+            className="mt-1 w-full rounded-2xl border border-slate-700 bg-[#202020] px-3 py-2 text-sm text-white"
+
+            />
+
+            </label>
+
+            ) : (
+
+            /* KEEP YOUR EXISTING PURCHASE PRICE FIELD HERE */
+
+
           <label className="text-sm font-medium text-slate-700">
             <span className="inline-flex items-center gap-1.5">
               Purchase Price ($)
@@ -144,6 +327,7 @@ function HoldingModal({ isOpen, onClose, onSubmit, initialData, mode }) {
             <input required type="number" min="0.01" step="0.01" name="purchasePrice" value={form.purchasePrice} onChange={handleChange} className={`mt-1 w-full rounded-2xl border px-3 py-2 text-sm ${errors.purchasePrice ? 'border-rose-300' : 'border-slate-200'}`} />
             {errors.purchasePrice ? <p className="mt-1 text-xs text-rose-500">{errors.purchasePrice}</p> : null}
           </label>
+          )}
           <label className="sm:col-span-2 text-sm font-medium text-slate-700">
             Purchase Date
             <input required type="date" name="purchaseDate" value={form.purchaseDate} onChange={handleChange} className={`mt-1 w-full rounded-2xl border px-3 py-2 text-sm ${errors.purchaseDate ? 'border-rose-300' : 'border-slate-200'}`} />
@@ -161,6 +345,7 @@ function HoldingModal({ isOpen, onClose, onSubmit, initialData, mode }) {
 }
 
 export default function Holdings({ refreshToken }) {
+    const navigate = useNavigate()
   const [items, setItems] = useState([])
   const [pricesByTicker, setPricesByTicker] = useState({})
   const [loading, setLoading] = useState(true)
@@ -210,6 +395,8 @@ export default function Holdings({ refreshToken }) {
     load()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshToken])
+
+
 
   const tableRows = useMemo(() => {
     return items.map((item) => {
@@ -303,7 +490,15 @@ export default function Holdings({ refreshToken }) {
             colSpan={9}
           >
             {tableRows.map((item) => (
-              <tr key={item.id} className="transition hover:bg-slate-50">
+             <tr
+               key={item.id}
+               onClick={() =>
+                 navigate(
+                   `/market-prices?symbol=${encodeURIComponent(item.ticker)}&type=${item.assetType}`
+                 )
+               }
+               className="cursor-pointer transition hover:bg-slate-50"
+             >
                 <td className="px-4 py-3 font-semibold text-slate-900">{item.ticker}</td>
                 <td className="px-4 py-3"><span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">{item.assetType}</span></td>
                 <td className="px-4 py-3 text-slate-600">{item.quantity}</td>
