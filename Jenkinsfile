@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         GIT_URL = 'https://github.com/Neueda-Learning/107-TheThreeBytes-PortfolioManager.git'
-        BRANCH = 'ci-cd'
+        BRANCH = 'main'
         COMPOSE_FILE = "docker-compose.yml"
     }
 
