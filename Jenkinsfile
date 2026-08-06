@@ -29,7 +29,11 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh "docker-compose -f ${COMPOSE_FILE} up -d"
+                sh '''
+                    docker-compose down || true
+                    docker rm -f portfolio_mysql portfolio_backend || true
+                    docker-compose up -d
+                '''
             }
         }
 
