@@ -5,9 +5,9 @@ import java.util.Map;
 
 public record PortfolioSummaryResponse(
         long totalPositions,
-        long totalQuantity,
+        BigDecimal totalQuantity,
         BigDecimal totalCostBasis,
-        Map<String, Long> quantityByAssetType,
+        Map<String, BigDecimal> quantityByAssetType,
         Map<String, BigDecimal> costByAssetType) {
 }
 

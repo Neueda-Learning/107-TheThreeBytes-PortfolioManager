@@ -40,32 +40,28 @@ public class DashboardService {
         Map<String, BigDecimal> livePriceByTicker = items.stream()
                 .map(PortfolioItem::getTicker)
                 .distinct()
-                .collect(Collectors.toMap(
-                        ticker -> ticker,
-                        ticker -> {
-                            var r = priceService.getPrice(ticker);
-                            return r.currentPrice();
-                        }
-                ));
+                .map(ticker -> new java.util.AbstractMap.SimpleEntry<>(ticker, priceService.getPrice(ticker).currentPrice()))
+                .filter(e -> e.getValue() != null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         BigDecimal totalCostBasis = BigDecimal.ZERO;
         BigDecimal totalCurrentValue = BigDecimal.ZERO;
-        Map<String, Long> quantityByType = new HashMap<>();
+        Map<String, BigDecimal> quantityByType = new HashMap<>();
         Map<String, BigDecimal> costByType = new HashMap<>();
-        long totalQuantity = 0;
+        BigDecimal totalQuantity = BigDecimal.ZERO;
 
         for (PortfolioItem item : items) {
-            BigDecimal cost = item.getPurchasePrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+            BigDecimal cost = item.getPurchasePrice().multiply(item.getQuantity());
             totalCostBasis = totalCostBasis.add(cost);
-            totalQuantity += item.getQuantity();
+            totalQuantity = totalQuantity.add(item.getQuantity());
 
             String type = item.getAssetType().name();
-            quantityByType.merge(type, (long) item.getQuantity(), Long::sum);
+            quantityByType.merge(type, item.getQuantity(), BigDecimal::add);
             costByType.merge(type, cost, BigDecimal::add);
 
             BigDecimal livePrice = livePriceByTicker.get(item.getTicker());
             BigDecimal currentPrice = livePrice != null ? livePrice : item.getPurchasePrice();
-            totalCurrentValue = totalCurrentValue.add(currentPrice.multiply(BigDecimal.valueOf(item.getQuantity())));
+            totalCurrentValue = totalCurrentValue.add(currentPrice.multiply(item.getQuantity()));
         }
 
         BigDecimal gainLoss = totalCurrentValue.subtract(totalCostBasis);

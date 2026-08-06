@@ -71,9 +71,9 @@ public class PortfolioItemController {
     }
 
     @PostMapping("/{id}/sell")
-    @Operation(summary = "Sell all units of a holding and log a SELL transaction")
+    @Operation(summary = "Sell units of a holding and log a SELL transaction")
     public TransactionResponse sell(@PathVariable Long id, @Valid @RequestBody SellHoldingRequest request) {
-        return portfolioItemService.sell(id, request.pricePerUnit());
+        return portfolioItemService.sell(id, request.pricePerUnit(), request.quantity());
     }
 
     @GetMapping("/summary")

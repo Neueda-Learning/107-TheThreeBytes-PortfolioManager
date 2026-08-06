@@ -6,12 +6,12 @@ import java.util.Map;
 
 public record DashboardResponse(
         long totalPositions,
-        long totalQuantity,
+        BigDecimal totalQuantity,
         BigDecimal totalCostBasis,
         BigDecimal estimatedTotalValue,
         BigDecimal unrealizedGainLoss,
         BigDecimal unrealizedGainLossPct,
-        Map<String, Long> quantityByAssetType,
+        Map<String, BigDecimal> quantityByAssetType,
         Map<String, BigDecimal> costByAssetType,
         List<PortfolioItemResponse> holdings) {
 }

@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --pm-bg: #0a0a0a;
+  --pm-panel: #111111;
+  --pm-card: #161616;
+  --pm-line: rgba(255, 255, 255, 0.07);
+  --pm-text: #f2f2f0;
+  --pm-text-2: #9a9a96;
+  --pm-text-3: #5c5c58;
+  --pm-lime: #7fff3c;
+  --pm-emerald: #00c853;
+  --pm-danger: #ff6b5e;
+  font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--pm-text);
+  background-color: var(--pm-bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, rgba(127, 255, 60, 0.06), transparent 34%), var(--pm-bg);
+  color: var(--pm-text);
+  font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Shared dark design helpers */
+.pm-display {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+}
+
+.pm-mono {
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.pm-glass-card {
+  background: rgba(22, 22, 22, 0.72);
+  border: 1px solid var(--pm-line);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.pm-glass-card:hover {
+  border-color: rgba(127, 255, 60, 0.22);
+  box-shadow: 0 8px 34px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(127, 255, 60, 0.08);
+}
+
+.pm-control {
+  border: 1px solid var(--pm-line);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--pm-text-2);
+}
+
+.pm-control:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pm-control-input {
+  border: 1px solid var(--pm-line);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--pm-text);
+}
+
+.pm-control-input::placeholder {
+  color: var(--pm-text-3);
+}
+
+.pm-control-input:focus {
+  border-color: rgba(127, 255, 60, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Theme remap for existing Tailwind utility usage */
+.bg-white {
+  background-color: rgba(22, 22, 22, 0.74) !important;
+}
+
+.bg-white\/95,
+.bg-white\/90,
+.bg-white\/80 {
+  background-color: rgba(17, 17, 17, 0.9) !important;
+}
+
+.bg-slate-50,
+.bg-slate-100 {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+.bg-slate-900 {
+  background-color: var(--pm-lime) !important;
+}
+
+.bg-slate-900.text-white {
+  color: #0a0a0a !important;
+}
+
+.text-slate-900,
+.text-slate-800 {
+  color: var(--pm-text) !important;
+}
+
+.text-slate-700,
+.text-slate-600,
+.text-slate-500 {
+  color: var(--pm-text-2) !important;
+}
+
+.text-slate-400 {
+  color: var(--pm-text-3) !important;
+}
+
+.border-slate-100,
+.border-slate-200,
+.border-slate-200\/80,
+.divide-slate-100,
+.divide-slate-200 {
+  border-color: var(--pm-line) !important;
+}
+
+.hover\:bg-slate-50:hover,
+.hover\:bg-slate-100:hover,
+.hover\:bg-slate-200:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.hover\:bg-slate-800:hover,
+.hover\:bg-slate-900:hover {
+  background-color: #b6ff89 !important;
+}
+
+.shadow-\[0_10px_30px_rgba\(15\,23\,42\,0\.05\)\],
+.shadow-\[0_8px_20px_rgba\(15\,23\,42\,0\.03\)\] {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35) !important;
+}

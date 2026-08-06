@@ -30,8 +30,8 @@ public class PortfolioSnapshot {
     @Column(name = "total_positions", nullable = false)
     private Long totalPositions;
 
-    @Column(name = "total_quantity", nullable = false)
-    private Long totalQuantity;
+    @Column(name = "total_quantity", precision = 19, scale = 8)
+    private BigDecimal totalQuantity;
 
     @Column(name = "created_at", nullable = false)
     private LocalDate createdAt;
@@ -96,11 +96,11 @@ public class PortfolioSnapshot {
         this.totalPositions = totalPositions;
     }
 
-    public Long getTotalQuantity() {
+    public BigDecimal getTotalQuantity() {
         return totalQuantity;
     }
 
-    public void setTotalQuantity(Long totalQuantity) {
+    public void setTotalQuantity(BigDecimal totalQuantity) {
         this.totalQuantity = totalQuantity;
     }
 

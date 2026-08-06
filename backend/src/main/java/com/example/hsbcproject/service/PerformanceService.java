@@ -38,12 +38,12 @@ public class PerformanceService {
     }
 
     private PerformanceItemResponse buildPerformance(PortfolioItem item) {
-        LivePriceResponse priceData = priceService.getPrice(item.getTicker());
+        LivePriceResponse priceData = priceService.getPrice(item.getTicker(), item.getAssetType());
         BigDecimal currentPrice = priceData.currentPrice() != null
                 ? priceData.currentPrice() : item.getPurchasePrice();
 
-        BigDecimal costBasis = item.getPurchasePrice().multiply(BigDecimal.valueOf(item.getQuantity()));
-        BigDecimal currentValue = currentPrice.multiply(BigDecimal.valueOf(item.getQuantity()));
+        BigDecimal costBasis = item.getPurchasePrice().multiply(item.getQuantity());
+        BigDecimal currentValue = currentPrice.multiply(item.getQuantity());
         BigDecimal unrealizedGain = currentValue.subtract(costBasis);
         BigDecimal unrealizedGainPct = costBasis.compareTo(BigDecimal.ZERO) > 0
                 ? unrealizedGain.divide(costBasis, 4, RoundingMode.HALF_UP)

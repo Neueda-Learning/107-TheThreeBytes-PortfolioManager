@@ -11,7 +11,7 @@ public record PortfolioSnapshotResponse(
         BigDecimal totalGainLoss,
         BigDecimal totalGainLossPct,
         Long totalPositions,
-        Long totalQuantity
+        BigDecimal totalQuantity
 ) {
 }
 
