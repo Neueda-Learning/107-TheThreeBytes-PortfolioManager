@@ -31,10 +31,69 @@ const SECTOR_SUGGESTIONS = [
 
 const TICKER_PATTERN = /^[A-Za-z.]{1,10}$/
 
+// Latest market data from backend as of 2026-08-05
+const BONDS_DATA = {
+  UST2Y: { name: 'US Treasury 2-Year Bond', price: 162.95, rate: 4.65, lockInMonths: 24, issuer: 'US Treasury' },
+  UST5Y: { name: 'US Treasury 5-Year Bond', price: 85.77, rate: 4.35, lockInMonths: 60, issuer: 'US Treasury' },
+  UST10Y: { name: 'US Treasury 10-Year Bond', price: 92.44, rate: 4.15, lockInMonths: 120, issuer: 'US Treasury' },
+  CORP1: { name: 'Corporate Bond Fund 1', price: 96.30, rate: 5.20, lockInMonths: 36, issuer: 'Corporate' },
+  CORP2: { name: 'Corporate Bond Fund 2', price: 103.75, rate: 5.50, lockInMonths: 48, issuer: 'Corporate' },
+  MUNI: { name: 'Municipal Bond Fund', price: 99.88, rate: 3.85, lockInMonths: 84, issuer: 'Municipality' },
+  BND: { name: 'Vanguard Total Bond Market ETF', price: 95.50, rate: 4.10, lockInMonths: 60, issuer: 'Vanguard' },
+  TLT: { name: 'iShares 20+ Year Treasury Bond ETF', price: 88.65, rate: 4.05, lockInMonths: 240, issuer: 'iShares' },
+  HYG: { name: 'iShares iBoxx High Yield Corporate Bond ETF', price: 102.20, rate: 6.75, lockInMonths: 48, issuer: 'iShares' },
+  LQD: { name: 'iShares iBoxx Investment Grade Corporate Bond ETF', price: 97.80, rate: 5.45, lockInMonths: 60, issuer: 'iShares' },
+}
+
+const CRYPTO_DATA = {
+  BTC: { name: 'Bitcoin', price: 82796.92 },
+  ETH: { name: 'Ethereum', price: 3145.68 },
+  SOL: { name: 'Solana', price: 142.34 },
+  XRP: { name: 'Ripple', price: 2.87 },
+  ADA: { name: 'Cardano', price: 0.98 },
+  DOGE: { name: 'Dogecoin', price: 0.41 },
+  MATIC: { name: 'Polygon', price: 0.71 },
+  AVAX: { name: 'Avalanche', price: 36.44 },
+  LTC: { name: 'Litecoin', price: 89.23 },
+  BCH: { name: 'Bitcoin Cash', price: 478.95 },
+  XLM: { name: 'Stellar Lumens', price: 0.22 },
+  LINK: { name: 'Chainlink', price: 28.76 },
+}
+
 function searchLabel(assetType) {
   if (assetType === 'BOND') return 'Search bond name'
   if (assetType === 'CRYPTO') return 'Search cryptocurrency'
   return 'Search stock/company name'
+}
+
+function autofillBondData(ticker) {
+  const bondData = BONDS_DATA[ticker.toUpperCase()]
+  if (!bondData) return null
+
+  // Calculate maturity date from today + lockInMonths
+  const today = new Date()
+  const maturityDate = new Date(today.getFullYear(), today.getMonth() + bondData.lockInMonths, today.getDate())
+  const maturityDateStr = maturityDate.toISOString().split('T')[0]
+
+  return {
+    name: bondData.name,
+    issuer: bondData.issuer,
+    sector: 'Government',
+    purchasePrice: String(bondData.price),
+    interestRate: String(bondData.rate),
+    maturityDate: maturityDateStr,
+  }
+}
+
+function autofillCryptoData(ticker) {
+  const cryptoData = CRYPTO_DATA[ticker.toUpperCase()]
+  if (!cryptoData) return null
+
+  return {
+    name: cryptoData.name,
+    sector: 'Digital Assets',
+    purchasePrice: String(cryptoData.price),
+  }
 }
 
 function validate(form) {
@@ -165,14 +224,35 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
     setForm((current) => ({ ...current, name: item.name, ticker: item.ticker }))
     setErrors((current) => ({ ...current, name: undefined, ticker: undefined }))
     setIsSuggestionsOpen(false)
+
     if (form.assetType === 'STOCK') {
       fetchStockQuote(item.ticker)
+    } else if (form.assetType === 'BOND') {
+      const bondData = autofillBondData(item.ticker)
+      if (bondData) {
+        setForm((current) => ({ ...current, ...bondData }))
+      }
+    } else if (form.assetType === 'CRYPTO') {
+      const cryptoData = autofillCryptoData(item.ticker)
+      if (cryptoData) {
+        setForm((current) => ({ ...current, ...cryptoData }))
+      }
     }
   }
 
   const handleTickerBlur = () => {
     if (form.assetType === 'STOCK') {
       fetchStockQuote(form.ticker)
+    } else if (form.assetType === 'BOND') {
+      const bondData = autofillBondData(form.ticker)
+      if (bondData) {
+        setForm((current) => ({ ...current, ...bondData }))
+      }
+    } else if (form.assetType === 'CRYPTO') {
+      const cryptoData = autofillCryptoData(form.ticker)
+      if (cryptoData) {
+        setForm((current) => ({ ...current, ...cryptoData }))
+      }
     }
   }
 
@@ -333,12 +413,34 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
             </div>
           ) : null}
 
-          {form.assetType === 'STOCK' && quote.status === 'error' ? (
-            <div role="alert" className="sm:col-span-2 flex items-start gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">
-              <AlertTriangle size={14} className="mt-0.5 shrink-0" />
-              <span>{quote.error} You can enter the purchase price manually.</span>
-            </div>
-          ) : null}
+           {form.assetType === 'STOCK' && quote.status === 'error' ? (
+             <div role="alert" className="sm:col-span-2 flex items-start gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">
+               <AlertTriangle size={14} className="mt-0.5 shrink-0" />
+               <span>{quote.error} You can enter the purchase price manually.</span>
+             </div>
+           ) : null}
+
+           {form.assetType === 'BOND' && form.ticker && form.purchasePrice ? (
+             <div className="sm:col-span-2 rounded-2xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
+               <p className="font-semibold">{form.name || form.ticker}</p>
+               <p>
+                 {form.ticker.toUpperCase()} · ${Number(form.purchasePrice).toFixed(2)}
+                 {form.interestRate ? ` · ${form.interestRate}% APR` : ''}
+               </p>
+               <p className="text-xs text-emerald-600">
+                 {form.maturityDate && `Maturity: ${form.maturityDate}`}
+               </p>
+             </div>
+           ) : null}
+
+           {form.assetType === 'CRYPTO' && form.ticker && form.purchasePrice ? (
+             <div className="sm:col-span-2 rounded-2xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
+               <p className="font-semibold">{form.name || form.ticker}</p>
+               <p>
+                 {form.ticker.toUpperCase()} · ${Number(form.purchasePrice).toFixed(2)}
+               </p>
+             </div>
+           ) : null}
 
           {form.assetType === 'BOND' ? (
             <label className="text-sm font-medium text-slate-700">
