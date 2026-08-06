@@ -53,16 +53,18 @@ export default function HoldingsTable({ holdings }) {
                   className="px-4 py-3 font-semibold text-slate-700"
                   aria-sort={sortConfig.key === column.key ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                 >
-                  <button
-                    type="button"
-                    className="flex items-center gap-2"
-                    onClick={() => handleSort(column.key)}
-                    aria-label={`Sort by ${column.label}`}
-                  >
-                    <span>{column.label}</span>
+                  <span className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      className="flex items-center gap-2"
+                      onClick={() => handleSort(column.key)}
+                      aria-label={`Sort by ${column.label}`}
+                    >
+                      <span>{column.label}</span>
+                      <ArrowUpDown size={14} className="text-slate-400" />
+                    </button>
                     {column.info ? <InfoTooltip {...column.info} /> : null}
-                    <ArrowUpDown size={14} className="text-slate-400" />
-                  </button>
+                  </span>
                 </th>
               ))}
             </tr>

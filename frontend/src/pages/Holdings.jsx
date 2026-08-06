@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Pencil, Trash2, X, TrendingDown } from 'lucide-react'
+import { Pencil, X, TrendingDown } from 'lucide-react'
 import AsyncState from '../components/AsyncState'
 import ConfirmDialog from '../components/ConfirmDialog'
 import DataTableShell from '../components/DataTableShell'
@@ -8,7 +8,6 @@ import PageCard from '../components/PageCard'
 import RefreshAction from '../components/RefreshAction'
 import SectionHeader from '../components/SectionHeader'
 import {
-  deletePortfolioItem,
   getApiErrorMessage,
   getPortfolioItems,
   getPrice,
@@ -169,7 +168,6 @@ export default function Holdings({ refreshToken }) {
   const [error, setError] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingItem, setEditingItem] = useState(null)
-  const [confirmDeleteId, setConfirmDeleteId] = useState(null)
   const [confirmSellItem, setConfirmSellItem] = useState(null)
 
   const loadPrices = async (holdings) => {
@@ -250,15 +248,6 @@ export default function Holdings({ refreshToken }) {
     }
   }
 
-  const handleConfirmDelete = async () => {
-    try {
-      await deletePortfolioItem(confirmDeleteId)
-      setConfirmDeleteId(null)
-      await load()
-    } catch (err) {
-      setError(getApiErrorMessage(err, 'We could not delete this holding right now.'))
-    }
-  }
 
   const handleConfirmSell = async () => {
     try {
@@ -291,17 +280,17 @@ export default function Holdings({ refreshToken }) {
 
         {!loading && !error && (
           <DataTableShell
-            headers={[
-              { key: 'ticker', label: 'Ticker', info: { title: 'Ticker', description: 'Short symbol that identifies the asset.' } },
-              { key: 'asset-type', label: 'Asset Type', info: { title: 'Asset type', description: 'Investment category such as stock, bond, or crypto.' } },
-              { key: 'quantity', label: 'Quantity', info: { title: 'Quantity', description: 'Number of units you currently own.' } },
-              { key: 'purchase-price', label: 'Purchase Price', info: { title: 'Purchase price', description: 'Average price per unit paid when acquired.' } },
-              { key: 'live-price', label: 'Live Price', info: { title: 'Live price', description: 'Latest available market price from the price service.' } },
-              { key: 'change-24h', label: '24h Change', info: { title: '24-hour change', description: 'Percentage movement in price over the past 24 hours.' } },
-              { key: 'current-value', label: 'Current Value', info: { title: 'Current value', description: 'Estimated value now, calculated as live price multiplied by quantity.' } },
-              { key: 'unrealized', label: 'Unrealized P/L', info: { title: 'Unrealized gain/loss', description: 'Potential profit or loss on holdings you have not sold yet.' } },
-              { key: 'actions', label: 'Actions', info: { title: 'Actions', description: 'Edit details, sell all units, or remove the holding.' } },
-            ]}
+             headers={[
+               { key: 'ticker', label: 'Ticker', info: { title: 'Ticker', description: 'Short symbol that identifies the asset.' } },
+               { key: 'asset-type', label: 'Asset Type', info: { title: 'Asset type', description: 'Investment category such as stock, bond, or crypto.' } },
+               { key: 'quantity', label: 'Quantity', info: { title: 'Quantity', description: 'Number of units you currently own.' } },
+               { key: 'purchase-price', label: 'Purchase Price', info: { title: 'Purchase price', description: 'Average price per unit paid when acquired.' } },
+               { key: 'live-price', label: 'Live Price', info: { title: 'Live price', description: 'Latest available market price from the price service.' } },
+               { key: 'change-24h', label: '24h Change', info: { title: '24-hour change', description: 'Percentage movement in price over the past 24 hours.' } },
+               { key: 'current-value', label: 'Current Value', info: { title: 'Current value', description: 'Estimated value now, calculated as live price multiplied by quantity.' } },
+               { key: 'unrealized', label: 'Unrealized P/L', info: { title: 'Unrealized gain/loss', description: 'Potential profit or loss on holdings you have not sold yet.' } },
+               { key: 'actions', label: 'Actions', info: { title: 'Actions', description: 'Edit details or sell all units.' } },
+             ]}
             hasRows={tableRows.length > 0}
             emptyMessage="No holdings found yet."
             colSpan={9}
@@ -318,28 +307,26 @@ export default function Holdings({ refreshToken }) {
                 </td>
                 <td className="px-4 py-3 text-slate-900">{currency.format(item.currentValue)}</td>
                 <td className={`px-4 py-3 font-medium ${item.unrealized >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>{currency.format(item.unrealized)}</td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <button type="button" aria-label={`Edit holding ${item.ticker}`} onClick={() => handleEdit(item)} className="rounded-xl border border-slate-200 p-2 text-slate-500 hover:bg-slate-100"><Pencil size={14} /></button>
-                    <button type="button" aria-label={`Sell all units of ${item.ticker}`} onClick={() => setConfirmSellItem(item)} title="Sell all" className="rounded-xl border border-amber-200 p-2 text-amber-600 hover:bg-amber-50"><TrendingDown size={14} /></button>
-                    <button type="button" aria-label={`Delete holding ${item.ticker}`} onClick={() => setConfirmDeleteId(item.id)} className="rounded-xl border border-rose-100 p-2 text-rose-500 hover:bg-rose-50"><Trash2 size={14} /></button>
-                  </div>
-                </td>
+                 <td className="px-4 py-3">
+                   <div className="flex items-center gap-2">
+                     <button type="button" aria-label={`Edit holding ${item.ticker}`} onClick={() => handleEdit(item)} className="rounded-xl border border-slate-200 p-2 text-slate-500 hover:bg-slate-100"><Pencil size={14} /></button>
+                     <button type="button" aria-label={`Sell all units of ${item.ticker}`} onClick={() => setConfirmSellItem(item)} title="Sell all" className="rounded-xl border border-amber-200 p-2 text-amber-600 hover:bg-amber-50"><TrendingDown size={14} /></button>
+                   </div>
+                 </td>
               </tr>
             ))}
           </DataTableShell>
         )}
       </PageCard>
 
-      <HoldingModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleSave} initialData={editingItem} mode={editingItem ? 'edit' : 'add'} />
-      <ConfirmDialog isOpen={Boolean(confirmDeleteId)} title="Delete holding" message="This will permanently remove the holding from the portfolio." onCancel={() => setConfirmDeleteId(null)} onConfirm={handleConfirmDelete} />
-      <ConfirmDialog
-        isOpen={Boolean(confirmSellItem)}
-        title="Sell holding"
-        message={confirmSellItem ? `Sell all ${confirmSellItem.quantity} unit(s) of ${confirmSellItem.ticker} at ${confirmSellItem.livePrice != null ? `live price $${Number(confirmSellItem.livePrice).toFixed(2)}` : `purchase price $${Number(confirmSellItem.purchasePrice).toFixed(2)}`}? This will remove the position and log a SELL transaction.` : ''}
-        onCancel={() => setConfirmSellItem(null)}
-        onConfirm={handleConfirmSell}
-      />
-    </div>
-  )
-}
+       <HoldingModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleSave} initialData={editingItem} mode={editingItem ? 'edit' : 'add'} />
+       <ConfirmDialog
+         isOpen={Boolean(confirmSellItem)}
+         title="Sell holding"
+         message={confirmSellItem ? `Sell all ${confirmSellItem.quantity} unit(s) of ${confirmSellItem.ticker} at ${confirmSellItem.livePrice != null ? `live price $${Number(confirmSellItem.livePrice).toFixed(2)}` : `purchase price $${Number(confirmSellItem.purchasePrice).toFixed(2)}`}? This will remove the position and log a SELL transaction.` : ''}
+         onCancel={() => setConfirmSellItem(null)}
+         onConfirm={handleConfirmSell}
+       />
+     </div>
+   )
+ }
