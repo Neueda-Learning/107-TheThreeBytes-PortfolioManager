@@ -3,7 +3,6 @@ package com.example.hsbcproject.dto;
 import com.example.hsbcproject.domain.AssetType;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -18,8 +17,8 @@ public record UpdatePortfolioItemRequest(
         String ticker,
 
         @NotNull(message = "quantity is required")
-        @Min(value = 1, message = "quantity must be at least 1")
-        Integer quantity,
+        @DecimalMin(value = "0.00000001", message = "quantity must be at least 1")
+        BigDecimal quantity,
 
         @NotNull(message = "assetType is required")
         AssetType assetType,

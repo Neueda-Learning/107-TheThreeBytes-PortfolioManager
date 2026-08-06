@@ -46,12 +46,12 @@ public class TaxService {
         String taxCategory = isLongTerm ? "LONG_TERM" : "SHORT_TERM";
         BigDecimal taxRate = isLongTerm ? LONG_TERM_RATE : SHORT_TERM_RATE;
 
-        LivePriceResponse priceData = priceService.getPrice(item.getTicker());
+        LivePriceResponse priceData = priceService.getPrice(item.getTicker(), item.getAssetType());
         BigDecimal currentPrice = priceData.currentPrice() != null
                 ? priceData.currentPrice() : item.getPurchasePrice();
 
-        BigDecimal costBasis = item.getPurchasePrice().multiply(BigDecimal.valueOf(item.getQuantity()));
-        BigDecimal currentValue = currentPrice.multiply(BigDecimal.valueOf(item.getQuantity()));
+        BigDecimal costBasis = item.getPurchasePrice().multiply(item.getQuantity());
+        BigDecimal currentValue = currentPrice.multiply(item.getQuantity());
         BigDecimal estimatedGain = currentValue.subtract(costBasis);
 
         BigDecimal taxLiability = estimatedGain.compareTo(BigDecimal.ZERO) > 0

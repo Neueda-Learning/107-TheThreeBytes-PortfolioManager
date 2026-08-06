@@ -26,11 +26,14 @@ public class PortfolioItemService {
 
     private final PortfolioItemRepository portfolioItemRepository;
     private final TransactionRepository transactionRepository;
+    private final DummyMarketDataStore dummyMarketDataStore;
 
     public PortfolioItemService(PortfolioItemRepository portfolioItemRepository,
-                                TransactionRepository transactionRepository) {
+                                TransactionRepository transactionRepository,
+                                DummyMarketDataStore dummyMarketDataStore) {
         this.portfolioItemRepository = portfolioItemRepository;
         this.transactionRepository = transactionRepository;
+        this.dummyMarketDataStore = dummyMarketDataStore;
     }
 
     @Transactional(readOnly = true)
@@ -57,8 +60,18 @@ public class PortfolioItemService {
         item.setName(request.name());
         item.setSector(request.sector());
         item.setIssuer(request.issuer());
-        item.setInterestRate(request.interestRate());
         item.setMaturityDate(request.maturityDate());
+        
+        if (request.assetType() == AssetType.BOND) {
+            dummyMarketDataStore.getSeriesByTicker(item.getTicker()).ifPresent(series -> {
+                if (series.bondTerms() != null) {
+                    item.setInterestRate(series.bondTerms().annualInterestRate());
+                }
+            });
+        } else {
+            item.setInterestRate(request.interestRate());
+        }
+
         PortfolioItemResponse saved = toResponse(portfolioItemRepository.save(item));
         logTransaction(item.getTicker(), item.getAssetType(), TransactionType.BUY,
                 item.getQuantity(), item.getPurchasePrice(), item.getPurchaseDate());
@@ -77,8 +90,18 @@ public class PortfolioItemService {
         item.setName(request.name());
         item.setSector(request.sector());
         item.setIssuer(request.issuer());
-        item.setInterestRate(request.interestRate());
         item.setMaturityDate(request.maturityDate());
+        
+        if (request.assetType() == AssetType.BOND) {
+            dummyMarketDataStore.getSeriesByTicker(item.getTicker()).ifPresent(series -> {
+                if (series.bondTerms() != null) {
+                    item.setInterestRate(series.bondTerms().annualInterestRate());
+                }
+            });
+        } else {
+            item.setInterestRate(request.interestRate());
+        }
+
         return toResponse(portfolioItemRepository.save(item));
     }
 
@@ -93,19 +116,46 @@ public class PortfolioItemService {
         portfolioItemRepository.delete(item);
     }
 
-    public TransactionResponse sell(Long id, BigDecimal pricePerUnit) {
+    public TransactionResponse sell(Long id, BigDecimal pricePerUnit, BigDecimal quantityToSell) {
         PortfolioItem item = getEntity(id);
+
+        if (quantityToSell == null || quantityToSell.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Quantity to sell must be greater than zero");
+        }
+        if (quantityToSell.compareTo(item.getQuantity()) > 0) {
+            throw new IllegalArgumentException("Cannot sell more than the current holding quantity");
+        }
+        
+        if (item.getAssetType() == AssetType.BOND) {
+            dummyMarketDataStore.getSeriesByTicker(item.getTicker()).ifPresent(series -> {
+                if (series.bondTerms() != null) {
+                    int lockInMonths = series.bondTerms().lockInMonths();
+                    LocalDate lockInEndDate = item.getPurchaseDate().plusMonths(lockInMonths);
+                    if (LocalDate.now().isBefore(lockInEndDate)) {
+                        throw new IllegalArgumentException("Bond cannot be sold during its lock-in period. Locked until " + lockInEndDate);
+                    }
+                }
+            });
+        }
+
         Transaction tx = logTransaction(item.getTicker(), item.getAssetType(), TransactionType.SELL,
-                item.getQuantity(), pricePerUnit, LocalDate.now());
-        portfolioItemRepository.delete(item);
-        BigDecimal total = tx.getPricePerUnit().multiply(BigDecimal.valueOf(tx.getQuantity()));
+                quantityToSell, pricePerUnit, LocalDate.now());
+        
+        if (quantityToSell.compareTo(item.getQuantity()) == 0) {
+            portfolioItemRepository.delete(item);
+        } else {
+            item.setQuantity(item.getQuantity().subtract(quantityToSell));
+            portfolioItemRepository.save(item);
+        }
+
+        BigDecimal total = tx.getPricePerUnit().multiply(tx.getQuantity());
         return new TransactionResponse(tx.getId(), tx.getTicker(), tx.getAssetType(),
                 tx.getTransactionType(), tx.getQuantity(), tx.getPricePerUnit(),
                 total, tx.getTransactionDate(), tx.getNotes());
     }
 
     private Transaction logTransaction(String ticker, AssetType assetType,
-                                       TransactionType type, Integer quantity,
+                                       TransactionType type, BigDecimal quantity,
                                        BigDecimal pricePerUnit, LocalDate date) {
         Transaction tx = new Transaction();
         tx.setTicker(ticker);
@@ -120,17 +170,17 @@ public class PortfolioItemService {
     @Transactional(readOnly = true)
     public PortfolioSummaryResponse getSummary() {
         List<PortfolioItem> items = portfolioItemRepository.findAll();
-        Map<String, Long> quantityByType = new HashMap<>();
+        Map<String, BigDecimal> quantityByType = new HashMap<>();
         Map<String, BigDecimal> costByType = new HashMap<>();
-        long totalQuantity = 0;
+        BigDecimal totalQuantity = BigDecimal.ZERO;
         BigDecimal totalCostBasis = BigDecimal.ZERO;
 
         for (PortfolioItem item : items) {
-            totalQuantity += item.getQuantity();
-            BigDecimal itemCost = item.getPurchasePrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+            totalQuantity = totalQuantity.add(item.getQuantity());
+            BigDecimal itemCost = item.getPurchasePrice().multiply(item.getQuantity());
             totalCostBasis = totalCostBasis.add(itemCost);
             String key = item.getAssetType().name();
-            quantityByType.merge(key, (long) item.getQuantity(), Long::sum);
+            quantityByType.merge(key, item.getQuantity(), BigDecimal::add);
             costByType.merge(key, itemCost, BigDecimal::add);
         }
 

@@ -33,13 +33,13 @@ public class RiskService {
         }
 
         BigDecimal totalCost = items.stream()
-                .map(i -> i.getPurchasePrice().multiply(BigDecimal.valueOf(i.getQuantity())))
+                .map(i -> i.getPurchasePrice().multiply(i.getQuantity()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         // Concentration by asset type (%)
         Map<String, BigDecimal> costByType = new HashMap<>();
         for (PortfolioItem item : items) {
-            BigDecimal cost = item.getPurchasePrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+            BigDecimal cost = item.getPurchasePrice().multiply(item.getQuantity());
             costByType.merge(item.getAssetType().name(), cost, BigDecimal::add);
         }
         Map<String, BigDecimal> concentrationByType = new HashMap<>();
@@ -53,7 +53,7 @@ public class RiskService {
         List<HoldingRiskDetail> riskDetails = items.stream().map(item -> {
             long days = ChronoUnit.DAYS.between(item.getPurchaseDate(), LocalDate.now());
             String category = days < 30 ? "SHORT_TERM" : days < 365 ? "MEDIUM_TERM" : "LONG_TERM";
-            BigDecimal cost = item.getPurchasePrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+            BigDecimal cost = item.getPurchasePrice().multiply(item.getQuantity());
             BigDecimal concentration = cost.divide(totalCost, 4, RoundingMode.HALF_UP)
                     .multiply(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
             return new HoldingRiskDetail(item.getTicker(), item.getAssetType(),

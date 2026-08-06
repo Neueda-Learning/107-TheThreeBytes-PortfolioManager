@@ -7,7 +7,7 @@ import java.time.LocalDate;
 public record PortfolioItemResponse(
         Long id,
         String ticker,
-        Integer quantity,
+        BigDecimal quantity,
         AssetType assetType,
         BigDecimal purchasePrice,
         LocalDate purchaseDate,
