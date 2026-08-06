@@ -18,7 +18,7 @@ USE portfolio_db;
 CREATE TABLE IF NOT EXISTS portfolio_items (
     id            BIGINT          NOT NULL AUTO_INCREMENT,
     ticker        VARCHAR(10)     NOT NULL,
-    quantity      INT             NOT NULL,
+    quantity      DECIMAL(19,8)   NOT NULL,
     asset_type    ENUM('STOCK','BOND','CRYPTO') NOT NULL,
     purchase_price DECIMAL(15,4)  NOT NULL,
     purchase_date  DATE           NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     ticker           VARCHAR(10)    NOT NULL,
     asset_type       ENUM('STOCK','BOND','CRYPTO') NOT NULL,
     transaction_type ENUM('BUY','SELL')            NOT NULL,
-    quantity         INT            NOT NULL,
+    quantity         DECIMAL(19,8)  NOT NULL,
     price_per_unit   DECIMAL(15,4)  NOT NULL,
     transaction_date DATE           NOT NULL,
     notes            VARCHAR(500)   NULL,
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS portfolio_snapshots (
     total_gain_loss     DECIMAL(15,2)  NOT NULL,
     total_gain_loss_pct DECIMAL(10,4)  NOT NULL,
     total_positions     BIGINT         NOT NULL,
-    total_quantity      BIGINT         NOT NULL,
+    total_quantity      DECIMAL(19,8)  NOT NULL,
     created_at          DATE           NOT NULL,
 
     PRIMARY KEY (id),
