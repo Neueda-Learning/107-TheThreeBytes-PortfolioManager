@@ -6,9 +6,12 @@ import PageCard from '../components/PageCard'
 import SectionHeader from '../components/SectionHeader'
 import {
   getApiErrorMessage,
+  DEFAULT_MARKET_ASSET_TYPE,
+  DEFAULT_MARKET_TIMEFRAME,
   getMarketAssetDetails,
   getMarketPriceHistory,
   MARKET_ASSET_TYPES,
+  MARKET_SUGGESTION_LIMIT,
   MARKET_TIMEFRAMES,
   searchMarketInstruments,
 } from '../services/marketService'
@@ -33,8 +36,8 @@ function ChartTooltipContent({ active, payload, label }) {
 }
 
 export default function MarketPrices() {
-  const [assetType, setAssetType] = useState('STOCK')
-  const [timeframe, setTimeframe] = useState('MONTHLY')
+  const [assetType, setAssetType] = useState(MARKET_ASSET_TYPES.includes(DEFAULT_MARKET_ASSET_TYPE) ? DEFAULT_MARKET_ASSET_TYPE : 'STOCK')
+  const [timeframe, setTimeframe] = useState(MARKET_TIMEFRAMES.includes(DEFAULT_MARKET_TIMEFRAME) ? DEFAULT_MARKET_TIMEFRAME : 'MONTHLY')
   const [query, setQuery] = useState('')
   const [selectedInstrument, setSelectedInstrument] = useState(null)
 
@@ -53,7 +56,7 @@ export default function MarketPrices() {
     const timer = window.setTimeout(async () => {
       try {
         setSuggestionsState((prev) => ({ ...prev, loading: true, error: '' }))
-        const data = await searchMarketInstruments(assetType, query, 10)
+        const data = await searchMarketInstruments(assetType, query, MARKET_SUGGESTION_LIMIT)
         setSuggestionsState({ loading: false, error: '', data })
       } catch (err) {
         setSuggestionsState({ loading: false, error: getApiErrorMessage(err, 'Could not load instruments.'), data: [] })
