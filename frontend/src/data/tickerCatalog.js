@@ -1,0 +1,22 @@
+export const tickerCatalog = [
+  { ticker: 'AAPL', name: 'Apple Inc.', assetType: 'STOCK' },
+  { ticker: 'MSFT', name: 'Microsoft Corporation', assetType: 'STOCK' },
+  { ticker: 'NVDA', name: 'NVIDIA Corporation', assetType: 'STOCK' },
+  { ticker: 'AMZN', name: 'Amazon.com Inc.', assetType: 'STOCK' },
+  { ticker: 'GOOGL', name: 'Alphabet Inc.', assetType: 'STOCK' },
+  { ticker: 'META', name: 'Meta Platforms Inc.', assetType: 'STOCK' },
+  { ticker: 'TSLA', name: 'Tesla Inc.', assetType: 'STOCK' },
+  { ticker: 'NFLX', name: 'Netflix Inc.', assetType: 'STOCK' },
+  { ticker: 'JPM', name: 'JPMorgan Chase & Co.', assetType: 'STOCK' },
+  { ticker: 'BAC', name: 'Bank of America Corp.', assetType: 'STOCK' },
+  { ticker: 'BND', name: 'Vanguard Total Bond Market ETF', assetType: 'BOND' },
+  { ticker: 'TLT', name: 'iShares 20+ Year Treasury Bond ETF', assetType: 'BOND' },
+  { ticker: 'HYG', name: 'iShares iBoxx High Yield Corporate Bond ETF', assetType: 'BOND' },
+  { ticker: 'LQD', name: 'iShares iBoxx Investment Grade Corporate Bond ETF', assetType: 'BOND' },
+  { ticker: 'BTC', name: 'Bitcoin', assetType: 'CRYPTO' },
+  { ticker: 'ETH', name: 'Ethereum', assetType: 'CRYPTO' },
+  { ticker: 'SOL', name: 'Solana', assetType: 'CRYPTO' },
+  { ticker: 'XRP', name: 'Ripple', assetType: 'CRYPTO' },
+  { ticker: 'ADA', name: 'Cardano', assetType: 'CRYPTO' },
+]
+
