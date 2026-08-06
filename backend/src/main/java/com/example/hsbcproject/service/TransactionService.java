@@ -58,7 +58,7 @@ public class TransactionService {
     }
 
     private TransactionResponse toResponse(Transaction tx) {
-        BigDecimal total = tx.getPricePerUnit().multiply(BigDecimal.valueOf(tx.getQuantity()));
+        BigDecimal total = tx.getPricePerUnit().multiply(tx.getQuantity());
         return new TransactionResponse(tx.getId(), tx.getTicker(), tx.getAssetType(),
                 tx.getTransactionType(), tx.getQuantity(), tx.getPricePerUnit(),
                 total, tx.getTransactionDate(), tx.getNotes());

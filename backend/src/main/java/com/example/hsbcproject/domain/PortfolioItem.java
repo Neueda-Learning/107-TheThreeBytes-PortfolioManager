@@ -22,8 +22,8 @@ public class PortfolioItem {
     @Column(name = "ticker", nullable = false, length = 10)
     private String ticker;
 
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
+    @Column(name = "quantity", nullable = false, precision = 19, scale = 8)
+    private BigDecimal quantity;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "asset_type", nullable = false, length = 20)
@@ -66,11 +66,11 @@ public class PortfolioItem {
         this.ticker = ticker;
     }
 
-    public Integer getQuantity() {
+    public BigDecimal getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(BigDecimal quantity) {
         this.quantity = quantity;
     }
 

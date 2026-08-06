@@ -8,7 +8,7 @@ public record PerformanceItemResponse(
         Long id,
         String ticker,
         AssetType assetType,
-        Integer quantity,
+        BigDecimal quantity,
         BigDecimal purchasePrice,
         BigDecimal currentPrice,
         BigDecimal costBasis,

@@ -30,8 +30,8 @@ public class Transaction {
     @Column(name = "transaction_type", nullable = false, length = 10)
     private TransactionType transactionType;
 
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
+    @Column(name = "quantity", nullable = false, precision = 19, scale = 8)
+    private BigDecimal quantity;
 
     @Column(name = "price_per_unit", nullable = false, precision = 15, scale = 4)
     private BigDecimal pricePerUnit;
@@ -50,8 +50,13 @@ public class Transaction {
     public void setAssetType(AssetType assetType) { this.assetType = assetType; }
     public TransactionType getTransactionType() { return transactionType; }
     public void setTransactionType(TransactionType transactionType) { this.transactionType = transactionType; }
-    public Integer getQuantity() { return quantity; }
-    public void setQuantity(Integer quantity) { this.quantity = quantity; }
+    public BigDecimal getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(BigDecimal quantity) {
+        this.quantity = quantity;
+    }
     public BigDecimal getPricePerUnit() { return pricePerUnit; }
     public void setPricePerUnit(BigDecimal pricePerUnit) { this.pricePerUnit = pricePerUnit; }
     public LocalDate getTransactionDate() { return transactionDate; }

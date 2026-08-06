@@ -10,7 +10,7 @@ public record TransactionResponse(
         String ticker,
         AssetType assetType,
         TransactionType transactionType,
-        Integer quantity,
+        BigDecimal quantity,
         BigDecimal pricePerUnit,
         BigDecimal totalValue,
         LocalDate transactionDate,
