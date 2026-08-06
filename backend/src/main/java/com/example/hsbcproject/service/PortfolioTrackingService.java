@@ -61,7 +61,7 @@ public class PortfolioTrackingService {
     /**
      * Get portfolio tracking data for a specific period
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public PortfolioTrackingResponse getTracking(TrackingPeriod period) {
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = calculateStartDate(endDate, period);
@@ -88,7 +88,7 @@ public class PortfolioTrackingService {
     /**
      * Get all historical snapshots
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public List<PortfolioSnapshotResponse> getAllSnapshots() {
         return snapshotRepository.findAllOrderByDateDesc()
                 .stream()

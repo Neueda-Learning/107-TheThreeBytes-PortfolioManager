@@ -35,39 +35,39 @@ export default function TopNavBar({ holdings, onAddInvestment, onSearch }) {
           </div>
         </div>
 
-        <div className="hidden flex-1 max-w-xl sm:block">
-          <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input
-              aria-label="Search investments"
-              value={query}
-              onChange={(event) => {
-                const nextValue = event.target.value
-                setQuery(nextValue)
-                onSearch?.(nextValue)
-              }}
-              placeholder="Search stocks, bonds or crypto"
-              className="pm-control-input w-full rounded-lg py-2 pl-9 pr-3 text-sm outline-none ring-0 transition"
-            />
-            {suggestions.length > 0 ? (
-              <div className="absolute left-0 right-0 top-[calc(100%+0.35rem)] rounded-lg border border-slate-200 bg-white p-2 shadow-sm">
-                {suggestions.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => handleSelectSuggestion(item)}
-                    className="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm text-slate-600 transition hover:bg-slate-50"
-                  >
-                    <span>
-                      <span className="font-medium text-slate-900">{item.ticker}</span> · {item.name || 'Unnamed holding'}
-                    </span>
-                    <span className="text-xs uppercase tracking-[0.2em] text-slate-400">{item.assetType}</span>
-                  </button>
-                ))}
-              </div>
-            ) : null}
-          </div>
-        </div>
+{/*         <div className="hidden flex-1 max-w-xl sm:block"> */}
+{/*           <div className="relative"> */}
+{/*             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" /> */}
+{/*             <input */}
+{/*               aria-label="Search investments" */}
+{/*               value={query} */}
+{/*               onChange={(event) => { */}
+{/*                 const nextValue = event.target.value */}
+{/*                 setQuery(nextValue) */}
+{/*                 onSearch?.(nextValue) */}
+{/*               }} */}
+{/*               placeholder="Search stocks, bonds or crypto" */}
+{/*               className="pm-control-input w-full rounded-lg py-2 pl-9 pr-3 text-sm outline-none ring-0 transition" */}
+{/*             /> */}
+{/*             {suggestions.length > 0 ? ( */}
+{/*               <div className="absolute left-0 right-0 top-[calc(100%+0.35rem)] rounded-lg border border-slate-200 bg-white p-2 shadow-sm"> */}
+{/*                 {suggestions.map((item) => ( */}
+{/*                   <button */}
+{/*                     key={item.id} */}
+{/*                     type="button" */}
+{/*                     onClick={() => handleSelectSuggestion(item)} */}
+{/*                     className="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm text-slate-600 transition hover:bg-slate-50" */}
+{/*                   > */}
+{/*                     <span> */}
+{/*                       <span className="font-medium text-slate-900">{item.ticker}</span> · {item.name || 'Unnamed holding'} */}
+{/*                     </span> */}
+{/*                     <span className="text-xs uppercase tracking-[0.2em] text-slate-400">{item.assetType}</span> */}
+{/*                   </button> */}
+{/*                 ))} */}
+{/*               </div> */}
+{/*             ) : null} */}
+{/*           </div> */}
+{/*         </div> */}
 
         <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3">
           <div className="flex-1 sm:hidden">

@@ -158,7 +158,23 @@ export default function MarketPrices() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={assetType === 'CRYPTO' ? 'e.g. Bitcoin or BTC' : 'e.g. Apple or AAPL'}
-              className="w-full rounded-2xl border border-slate-200 py-2 pl-9 pr-3 text-sm"
+              className="
+                w-full
+                rounded-2xl
+                border
+                border-slate-300
+                bg-white
+                py-2
+                pl-9
+                pr-3
+                text-sm
+                text-slate-900
+                placeholder:text-slate-400
+                focus:border-blue-500
+                focus:ring-2
+                focus:ring-blue-200
+                focus:outline-none
+              "
             />
           </label>
 
@@ -186,8 +202,21 @@ export default function MarketPrices() {
                   key={`${item.assetType}-${item.ticker}`}
                   type="button"
                   onClick={() => handleSelectInstrument(item)}
-                  className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm text-slate-700 hover:bg-white"
-                >
+                    className="
+                    flex
+                    w-full
+                    items-center
+                    justify-between
+                    rounded-xl
+                    px-3
+                    py-2
+                    text-left
+                    text-sm
+                    text-slate-700
+                    transition-colors
+                    hover:bg-slate-100
+                    hover:text-slate-900
+                    "                >
                   <span>
                     <span className="font-semibold text-slate-900">{item.ticker}</span> - {item.name}
                   </span>
@@ -329,14 +358,19 @@ export default function MarketPrices() {
                       />
                       <Tooltip content={<ChartTooltipContent />} />
                       <Line
-                        type="monotone"
-                        dataKey="close"
-                        stroke="#0f172a"
-                        strokeWidth={2.5}
-                        dot={false}
-                        activeDot={{ r: 4, strokeWidth: 0 }}
-                        isAnimationActive
-                        animationDuration={350}
+                          type="monotone"
+                          dataKey="close"
+                          stroke="#60A5FA"
+                          strokeWidth={3}
+                          dot={false}
+                          activeDot={{
+                              r: 5,
+                              fill: "#60A5FA",
+                              stroke: "#FFFFFF",
+                              strokeWidth: 2
+                          }}
+                          isAnimationActive
+                          animationDuration={350}
                       />
                     </LineChart>
                   </ResponsiveContainer>

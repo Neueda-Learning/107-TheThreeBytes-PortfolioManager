@@ -1,8 +1,18 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
 import InfoTooltip from './InfoTooltip'
 
-const palette = ['#3b82f6', '#ef4444', '#f59e0b', '#8b5cf6', '#06b6d4', '#ec4899', '#10b981', '#f97316', '#6366f1', '#14b8a6']
-
+const palette = [
+  '#4F86F7', // Soft Blue
+  '#5BAE9C', // Muted Teal
+  '#8C7AE6', // Lavender
+  '#F2B880', // Soft Orange
+  '#7F8C9A', // Slate
+  '#6FBF73', // Sage Green
+  '#C97B84', // Dusty Rose
+  '#A786DF', // Soft Purple
+  '#7CC7D9', // Muted Cyan
+  '#D6A85B'  // Warm Gold
+]
 export default function AllocationPieChart({ title, data, info }) {
   return (
     <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:p-5">
