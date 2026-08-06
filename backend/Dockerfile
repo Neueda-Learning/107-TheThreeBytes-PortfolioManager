@@ -15,7 +15,7 @@ RUN ./mvnw -q -DskipTests dependency:go-offline
 
 # Copy source and build the Spring Boot jar
 COPY src src
-RUN ./mvnw -q -DskipTests clean package
+RUN ./mvnw -q -Dmaven.test.skip=true clean package
 
 # Runtime stage
 FROM eclipse-temurin:21-jre
