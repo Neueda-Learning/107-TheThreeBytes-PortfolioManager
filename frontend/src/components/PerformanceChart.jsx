@@ -102,7 +102,7 @@ export default function PerformanceChart() {
               onClick={() => setActivePeriod(value)}
               className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
                 activePeriod === value
-                  ? 'bg-slate-900 text-white'
+                  ? 'bg-emerald-700 text-white'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >

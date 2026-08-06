@@ -18,7 +18,7 @@ export default function FilterChips({ options, activeValue, onChange, formatLabe
               key={option}
               type="button"
               onClick={() => onChange(option)}
-              className={`rounded-full px-3 py-2 text-sm font-medium transition ${active ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+              className={`rounded-full px-3 py-2 text-sm font-medium transition ${active ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
             >
               {optionLabel}
             </button>

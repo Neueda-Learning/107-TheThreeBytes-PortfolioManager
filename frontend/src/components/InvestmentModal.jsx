@@ -312,7 +312,7 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
               onClick={() => handleTypeChange(value)}
               className={`flex items-center justify-center gap-2 rounded-2xl border px-3 py-2 text-sm font-semibold transition ${
                 form.assetType === value
-                  ? 'border-slate-900 bg-slate-900 text-white'
+                  ? 'border-slate-900 bg-emerald-700 text-white'
                   : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
               }`}
             >
@@ -577,7 +577,7 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
             <button
               type="submit"
               disabled={isSubmitting || status === 'success'}
-              className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-2xl bg-emerald-700 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
             >
               {isSubmitting ? <Loader2 size={15} className="animate-spin" /> : null}
               {isSubmitting ? 'Saving...' : 'Save Investment'}

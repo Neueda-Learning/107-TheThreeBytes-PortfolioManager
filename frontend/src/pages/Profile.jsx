@@ -82,7 +82,7 @@ export default function Profile() {
           </div>
           {isEditing ? (
             <div className="flex gap-2">
-              <button type="button" onClick={handleSave} className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800">
+              <button type="button" onClick={handleSave} className="inline-flex items-center gap-1.5 rounded-full bg-emerald-700 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800">
                 <Check size={14} />
                 Save
               </button>

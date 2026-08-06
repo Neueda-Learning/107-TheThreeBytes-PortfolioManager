@@ -75,7 +75,7 @@ export default function Sidebar({ collapsible = false, collapsed = false, onTogg
                 [
                   `group relative flex items-center rounded-2xl py-3 text-sm font-medium transition-all ${collapsible && collapsed ? 'justify-center px-2' : 'gap-3 px-3'}`,
                   isActive
-                    ? 'bg-slate-900 text-white'
+                    ? 'bg-emerald-700 text-white'
                     : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
                 ].join(' ')
               }

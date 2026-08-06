@@ -73,8 +73,7 @@ function AddWatchlistModal({ isOpen, onClose, onSubmit }) {
               />
             </div>
           </label>
-          <div className="mt-2 max-h-44 overflow-auto rounded-2xl border border-slate-200 bg-slate-50 p-2">
-            {options.length === 0 ? (
+            <div className="mt-2 max-h-44 overflow-auto rounded-2xl border border-slate-700 bg-slate-900 p-2 shadow-2xl">               {options.length === 0 ? (
               <p className="px-2 py-3 text-xs text-slate-500">No matches. You can still enter ticker manually below.</p>
             ) : (
               options.map((item) => (
@@ -82,13 +81,15 @@ function AddWatchlistModal({ isOpen, onClose, onSubmit }) {
                   key={item.ticker}
                   type="button"
                   onClick={() => selectOption(item)}
-                  className="flex w-full items-center justify-between rounded-xl px-2 py-2 text-left text-sm text-slate-700 hover:bg-white"
+                  className="flex w-full items-center justify-between rounded-xl bg-slate-900 px-3 py-2 text-left text-sm text-white transition-colors hover:bg-slate-800 hover:text-white focus:bg-slate-800 focus:text-white"
                 >
-                  <span>
-                    <span className="font-semibold text-slate-900">{item.ticker}</span> - {item.name}
+                  <span className="font-semibold text-white">
+                    {item.ticker}
                   </span>
-                  <span className="rounded-full bg-white px-2 py-0.5 text-xs font-medium text-slate-500">{item.assetType}</span>
-                </button>
+                    <span className="rounded-full border border-slate-700 bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-300">
+                      {item.assetType}
+                    </span>
+                     </button>
               ))
             )}
           </div>
@@ -107,7 +108,7 @@ function AddWatchlistModal({ isOpen, onClose, onSubmit }) {
           </label>
           <div className="flex justify-end gap-3 pt-2">
             <button type="button" onClick={onClose} className="rounded-2xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600">Cancel</button>
-            <button type="submit" className="rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white">Add to Watchlist</button>
+            <button type="submit" className="rounded-2xl bg-emerald-700 px-4 py-2 text-sm font-semibold text-white">Add to Watchlist</button>
           </div>
         </form>
       </div>
@@ -195,7 +196,7 @@ export default function Watchlist() {
             <button onClick={() => loadPrices(items)} className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100">
               <RefreshCw size={14} className={priceLoading ? 'animate-spin' : ''} /> Refresh Prices
             </button>
-            <button onClick={() => setIsModalOpen(true)} className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">
+            <button onClick={() => setIsModalOpen(true)} className="inline-flex items-center gap-2 rounded-2xl bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">
               <Plus size={15} /> Add Ticker
             </button>
           </div>

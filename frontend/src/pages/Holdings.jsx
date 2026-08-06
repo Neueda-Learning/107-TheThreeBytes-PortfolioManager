@@ -152,7 +152,7 @@ function HoldingModal({ isOpen, onClose, onSubmit, initialData, mode }) {
           {submitError ? <p role="alert" className="sm:col-span-2 text-sm text-rose-500">{submitError}</p> : null}
           <div className="sm:col-span-2 flex justify-end gap-3 pt-2">
             <button type="button" disabled={isSubmitting} onClick={onClose} className="rounded-2xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 disabled:opacity-50">Cancel</button>
-            <button type="submit" disabled={isSubmitting} className="rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">Save Holding</button>
+            <button type="submit" disabled={isSubmitting} className="rounded-2xl bg-emerald-700 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">Save Holding</button>
           </div>
         </form>
       </div>

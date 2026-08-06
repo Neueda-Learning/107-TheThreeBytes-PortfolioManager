@@ -180,7 +180,7 @@ export default function MarketPrices() {
 
           <button
             type="submit"
-            className="rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+            className="rounded-2xl bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
           >
             Search
           </button>
@@ -308,7 +308,7 @@ export default function MarketPrices() {
                       type="button"
                       onClick={() => setTimeframe(period)}
                       className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
-                        timeframe === period ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        timeframe === period ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                       }`}
                     >
                       {period[0] + period.slice(1).toLowerCase()}

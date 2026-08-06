@@ -26,7 +26,7 @@ export default function TopNavBar({ holdings, onAddInvestment, onSearch }) {
     <div className="w-full border-b border-slate-200/80 bg-white/95 px-3 py-2.5 backdrop-blur-sm sm:px-4 lg:px-6">
       <div className="flex w-full items-center justify-between gap-2.5">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 text-[11px] font-semibold text-white">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-700 text-[11px] font-semibold text-white">
             PM
           </div>
           <div className="min-w-0">
@@ -102,7 +102,7 @@ export default function TopNavBar({ holdings, onAddInvestment, onSearch }) {
               <div className="absolute right-0 mt-2 w-44 rounded-lg border border-slate-200 bg-white p-2 shadow-sm">
                 <button type="button" onClick={() => { navigate('/market-prices'); setIsMoreOpen(false) }} className="flex w-full items-center rounded-md px-3 py-2 text-left text-sm text-slate-600 hover:bg-slate-50">Market Prices</button>
                 <button type="button" onClick={() => { navigate('/watchlist'); setIsMoreOpen(false) }} className="flex w-full items-center rounded-md px-3 py-2 text-left text-sm text-slate-600 hover:bg-slate-50">View Watchlist</button>
-                <button type="button" onClick={() => { onAddInvestment?.(); setIsMoreOpen(false) }} className="flex w-full items-center rounded-md bg-slate-900 px-3 py-2 text-left text-sm font-semibold text-white hover:bg-slate-800">Add Investment</button>
+                <button type="button" onClick={() => { onAddInvestment?.(); setIsMoreOpen(false) }} className="flex w-full items-center rounded-md bg-emerald-800 px-3 py-2 text-left text-sm font-semibold text-white hover:bg-emerald-800">Add Investment</button>
               </div>
             ) : null}
           </div>
@@ -125,7 +125,7 @@ export default function TopNavBar({ holdings, onAddInvestment, onSearch }) {
             <button
               type="button"
               onClick={onAddInvestment}
-              className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+              className="inline-flex items-center gap-2 rounded-lg bg-emerald-700 px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
             >
               <Plus size={16} />
               Add Investment
