@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/backend/src/test/java/com/example/hsbcproject/repository/RepositoryTestSupport.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/backend/src/test/java/com/example/hsbcproject/repository/RepositoryTestSupport.java" />
+              <option name="originalContent" value="package com.example.hsbcproject.repository;&#10;&#10;import com.example.hsbcproject.HsbcprojectApplication;&#10;import com.fasterxml.jackson.databind.ObjectMapper;&#10;import org.springframework.boot.test.context.TestConfiguration;&#10;import org.springframework.boot.test.context.SpringBootTest;&#10;import org.springframework.context.annotation.Bean;&#10;import org.springframework.test.context.ActiveProfiles;&#10;import org.springframework.transaction.annotation.Transactional;&#10;&#10;@SpringBootTest(&#10;&#9;&#9;classes = {HsbcprojectApplication.class, RepositoryTestSupport.RepositoryTestConfig.class},&#10;&#9;&#9;webEnvironment = SpringBootTest.WebEnvironment.NONE)&#10;@ActiveProfiles(&quot;test&quot;)&#10;@Transactional&#10;abstract class RepositoryTestSupport {&#10;&#10;&#9;@TestConfiguration&#10;&#9;static class RepositoryTestConfig {&#10;&#9;&#9;@Bean&#10;&#9;&#9;ObjectMapper objectMapper() {&#10;&#9;&#9;&#9;return new ObjectMapper();&#10;&#9;&#9;}&#10;&#9;}&#10;}&#10;&#10;" />
+              <option name="updatedContent" value="package com.example.hsbcproject.repository;&#13;&#10;&#13;&#10;import com.example.hsbcproject.HsbcprojectApplication;&#13;&#10;import org.springframework.boot.test.context.SpringBootTest;&#13;&#10;import org.springframework.test.context.ActiveProfiles;&#13;&#10;import org.springframework.transaction.annotation.Transactional;&#13;&#10;&#13;&#10;@SpringBootTest(&#13;&#10;&#9;&#9;classes = {HsbcprojectApplication.class},&#10;&#9;&#9;webEnvironment = SpringBootTest.WebEnvironment.NONE)&#13;&#10;@ActiveProfiles(&quot;test&quot;)&#13;&#10;@Transactional&#13;&#10;abstract class RepositoryTestSupport {&#13;&#10;}&#13;&#10;&#13;&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
