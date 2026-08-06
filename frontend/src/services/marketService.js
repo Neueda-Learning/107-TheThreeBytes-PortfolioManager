@@ -4,6 +4,9 @@ export { getApiErrorMessage }
 
 export const MARKET_ASSET_TYPES = ['STOCK', 'BOND', 'CRYPTO']
 export const MARKET_TIMEFRAMES = ['DAILY', 'WEEKLY', 'MONTHLY']
+export const DEFAULT_MARKET_ASSET_TYPE = import.meta.env.VITE_MARKET_DEFAULT_ASSET_TYPE || 'STOCK'
+export const DEFAULT_MARKET_TIMEFRAME = import.meta.env.VITE_MARKET_DEFAULT_TIMEFRAME || 'MONTHLY'
+export const MARKET_SUGGESTION_LIMIT = Number(import.meta.env.VITE_MARKET_SUGGESTION_LIMIT || 10)
 
 const TIMEFRAME_TO_DAYS = {
   DAILY: 2,

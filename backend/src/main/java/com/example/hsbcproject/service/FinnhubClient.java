@@ -35,9 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FinnhubClient {
 
     private static final Logger log = LoggerFactory.getLogger(FinnhubClient.class);
-    private static final String BASE_URL = "https://finnhub.io/api/v1";
-
-    @Value("${finnhub.api.key}")
+    @Value("${finnhub.api.key:}")
     private String apiKey;
 
     @Value("${finnhub.cache.quote-ttl-seconds:60}")
@@ -53,10 +51,11 @@ public class FinnhubClient {
     private final ConcurrentHashMap<String, CachedEntry<QuoteData>> quoteCache  = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, CachedEntry<StockCandleResponse>> candleCache = new ConcurrentHashMap<>();
 
-    public FinnhubClient(ObjectMapper objectMapper) {
+    public FinnhubClient(ObjectMapper objectMapper,
+                         @Value("${finnhub.api.base-url:https://finnhub.io/api/v1}") String baseUrl) {
         this.objectMapper = objectMapper;
         this.restClient = RestClient.builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(baseUrl)
                 .defaultHeader("Accept", "application/json")
                 .build();
     }
@@ -68,6 +67,9 @@ public class FinnhubClient {
      * Returns empty if ticker not found or any error occurs.
      */
     public Optional<QuoteData> getQuote(String ticker) {
+        if (apiKey == null || apiKey.isBlank()) {
+            return Optional.empty();
+        }
         String key = ticker.toUpperCase();
 
         // Check cache first
@@ -117,6 +119,9 @@ public class FinnhubClient {
      * Returns empty if ticker not found or any error occurs.
      */
     public Optional<StockCandleResponse> getCandles(String ticker, int days) {
+        if (apiKey == null || apiKey.isBlank()) {
+            return Optional.empty();
+        }
         String key = ticker.toUpperCase();
 
         // Check cache first
@@ -183,6 +188,9 @@ public class FinnhubClient {
      * Returns empty if not found.
      */
     public Optional<CompanyProfile> getCompanyProfile(String ticker) {
+        if (apiKey == null || apiKey.isBlank()) {
+            return Optional.empty();
+        }
         String key = ticker.toUpperCase();
         try {
             String json = restClient.get()
