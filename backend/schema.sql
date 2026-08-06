@@ -22,6 +22,11 @@ CREATE TABLE IF NOT EXISTS portfolio_items (
     asset_type    ENUM('STOCK','BOND','CRYPTO') NOT NULL,
     purchase_price DECIMAL(15,4)  NOT NULL,
     purchase_date  DATE           NOT NULL,
+    name           VARCHAR(200)   NULL,
+    sector         VARCHAR(100)   NULL,
+    issuer         VARCHAR(200)   NULL,
+    interest_rate  DECIMAL(6,3)   NULL,
+    maturity_date  DATE           NULL,
 
     PRIMARY KEY (id),
     INDEX idx_pi_ticker (ticker),
@@ -81,7 +86,26 @@ CREATE TABLE IF NOT EXISTS watchlist_items (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
--- 6. (Optional) Sample seed data – comment out if not needed
+-- 6. portfolio_snapshots
+--    Daily point-in-time portfolio value snapshots.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS portfolio_snapshots (
+    id                  BIGINT         NOT NULL AUTO_INCREMENT,
+    snapshot_date       DATE           NOT NULL,
+    total_value         DECIMAL(15,2)  NOT NULL,
+    total_cost_basis    DECIMAL(15,2)  NOT NULL,
+    total_gain_loss     DECIMAL(15,2)  NOT NULL,
+    total_gain_loss_pct DECIMAL(10,4)  NOT NULL,
+    total_positions     BIGINT         NOT NULL,
+    total_quantity      BIGINT         NOT NULL,
+    created_at          DATE           NOT NULL,
+
+    PRIMARY KEY (id),
+    UNIQUE INDEX uq_snapshot_date (snapshot_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================
+-- 7. (Optional) Sample seed data – comment out if not needed
 -- ============================================================
 
 -- Portfolio holdings

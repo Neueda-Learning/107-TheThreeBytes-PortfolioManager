@@ -60,7 +60,7 @@ pipeline {
 
     post {
         success {
-            echo "✅ Deployment successful – backend running on http://localhost:8080"
+            echo "✅ Deployment successful – backend running on http://localhost:8081"
         }
         failure {
             echo "❌ Pipeline failed. Check the logs above for details."

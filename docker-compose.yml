@@ -46,8 +46,9 @@ services:
       SPRING_DATASOURCE_PASSWORD: "n3u3da!"
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SERVER_PORT: 8081
     ports:
-      - "8080:8080"
+      - "8081:8081"
     networks:
       - portfolio_net
 
