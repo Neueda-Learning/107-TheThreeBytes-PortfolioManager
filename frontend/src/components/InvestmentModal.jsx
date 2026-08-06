@@ -282,13 +282,13 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
   const isSubmitting = status === 'submitting'
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/40 p-4">
+    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={descriptionId}
-        className="w-full max-w-xl rounded-[28px] border border-slate-200 bg-[#161616] p-5 shadow-2xl"
+        className="w-full max-w-xl rounded-[28px] border border-slate-700 bg-[#1b1b1b] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.65)]"
       >
         <div className="mb-4 flex items-center justify-between">
           <div>
@@ -338,20 +338,21 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
                 onBlur={() => window.setTimeout(() => setIsSuggestionsOpen(false), 150)}
                 autoComplete="off"
                 placeholder={form.assetType === 'CRYPTO' ? 'e.g. Bitcoin, Ethereum' : form.assetType === 'BOND' ? 'e.g. US Treasury Bond' : 'e.g. Apple, Microsoft'}
-                className={`w-full rounded-2xl border px-3 py-2 pl-9 text-sm ${errors.name ? 'border-rose-300' : 'border-slate-200'}`}
-              />
+                className={`w-full rounded-2xl border bg-[#111111] px-3 py-2 pl-9 text-sm text-white placeholder:text-slate-500 ${
+                  errors.name ? 'border-rose-300' : 'border-slate-700'
+                }`}              />
             </div>
             {isSuggestionsOpen && suggestions.length > 0 ? (
-              <div className="absolute left-0 right-0 top-[calc(100%+0.25rem)] z-10 max-h-48 overflow-auto rounded-2xl border border-slate-200 bg-white p-2 shadow-lg">
+              <div className="absolute left-0 right-0 top-[calc(100%+0.25rem)] z-50 max-h-48 overflow-auto rounded-2xl border border-slate-700 bg-[#1b1b1b] p-2 shadow-2xl">
                 {suggestions.map((item) => (
                   <button
                     key={item.ticker}
                     type="button"
                     onMouseDown={(event) => event.preventDefault()}
                     onClick={() => handleSelectSuggestion(item)}
-                    className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm text-slate-600 hover:bg-slate-50"
+                    className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm text-white transition-colors hover:bg-slate-800"
                   >
-                    <span><span className="font-semibold text-slate-900">{item.ticker}</span> · {item.name}</span>
+                    <span><span className="font-semibold text-white">{item.ticker}</span> · {item.name}</span>
                   </button>
                 ))}
               </div>
@@ -370,7 +371,9 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
               onChange={handleChange}
               onBlur={handleTickerBlur}
               placeholder={form.assetType === 'CRYPTO' ? 'e.g. BTC' : 'e.g. AAPL'}
-              className={`mt-1 w-full rounded-2xl border px-3 py-2 text-sm uppercase ${errors.ticker ? 'border-rose-300' : 'border-slate-200'}`}
+              className={`mt-1 w-full rounded-2xl border bg-[#111111] px-3 py-2 text-sm text-white placeholder:text-slate-500 ${
+                errors.ticker ? 'border-rose-300' : 'border-slate-700'
+              }`}
             />
             {errors.ticker ? <p className="mt-1 text-xs text-rose-500">{errors.ticker}</p> : null}
           </label>
@@ -387,8 +390,9 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
                 value={form.sector}
                 onChange={handleChange}
                 placeholder="e.g. Technology"
-                className={`mt-1 w-full rounded-2xl border px-3 py-2 text-sm ${errors.sector ? 'border-rose-300' : 'border-slate-200'}`}
-              />
+                className={`mt-1 w-full rounded-2xl border bg-[#111111] px-3 py-2 text-sm text-white placeholder:text-slate-500 ${
+                  errors.ticker ? 'border-rose-300' : 'border-slate-700'
+                }`}              />
               <datalist id="sector-suggestions">
                 {SECTOR_SUGGESTIONS.map((sector) => <option key={sector} value={sector} />)}
               </datalist>
@@ -453,8 +457,9 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
                 value={form.issuer}
                 onChange={handleChange}
                 placeholder="e.g. US Treasury"
-                className={`mt-1 w-full rounded-2xl border px-3 py-2 text-sm ${errors.issuer ? 'border-rose-300' : 'border-slate-200'}`}
-              />
+                className={`mt-1 w-full rounded-2xl border bg-[#111111] px-3 py-2 text-sm text-white placeholder:text-slate-500 ${
+                  errors.issuer ? 'border-rose-300' : 'border-slate-700'
+                }`}              />
               {errors.issuer ? <p className="mt-1 text-xs text-rose-500">{errors.issuer}</p> : null}
             </label>
           ) : null}
@@ -471,8 +476,9 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
               name="quantity"
               value={form.quantity}
               onChange={handleChange}
-              className={`mt-1 w-full rounded-2xl border px-3 py-2 text-sm ${errors.quantity ? 'border-rose-300' : 'border-slate-200'}`}
-            />
+                className={`mt-1 w-full rounded-2xl border bg-[#111111] px-3 py-2 text-sm text-white ${
+                  errors.quantity ? 'border-rose-300' : 'border-slate-700'
+                }`}            />
             {errors.quantity ? <p className="mt-1 text-xs text-rose-500">{errors.quantity}</p> : null}
           </label>
 
@@ -490,8 +496,13 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
                 value={form.purchasePrice}
                 onChange={handleChange}
                 readOnly={form.assetType === 'STOCK' && quote.status === 'success'}
-                className={`w-full rounded-2xl border px-3 py-2 text-sm ${errors.purchasePrice ? 'border-rose-300' : 'border-slate-200'} ${form.assetType === 'STOCK' && quote.status === 'success' ? 'bg-slate-50 text-slate-500' : ''}`}
-              />
+                className={`w-full rounded-2xl border bg-[#111111] px-3 py-2 text-sm text-white ${
+                  errors.purchasePrice ? 'border-rose-300' : 'border-slate-700'
+                } ${
+                  form.assetType === 'STOCK' && quote.status === 'success'
+                    ? 'bg-[#202020] text-slate-400'
+                    : ''
+                }`}              />
               {form.assetType === 'STOCK' && quote.status === 'loading' ? (
                 <Loader2 size={14} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-slate-400" />
               ) : null}
@@ -513,8 +524,9 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
                 name="interestRate"
                 value={form.interestRate}
                 onChange={handleChange}
-                className={`mt-1 w-full rounded-2xl border px-3 py-2 text-sm ${errors.interestRate ? 'border-rose-300' : 'border-slate-200'}`}
-              />
+                className={`mt-1 w-full rounded-2xl border bg-[#111111] px-3 py-2 text-sm text-white ${
+                  errors.interestRate ? 'border-rose-300' : 'border-slate-700'
+                }`}              />
               {errors.interestRate ? <p className="mt-1 text-xs text-rose-500">{errors.interestRate}</p> : null}
             </label>
           ) : null}
@@ -530,8 +542,9 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
                 name="maturityDate"
                 value={form.maturityDate}
                 onChange={handleChange}
-                className={`mt-1 w-full rounded-2xl border px-3 py-2 text-sm ${errors.maturityDate ? 'border-rose-300' : 'border-slate-200'}`}
-              />
+                className={`mt-1 w-full rounded-2xl border bg-[#111111] px-3 py-2 text-sm text-white ${
+                  errors.maturityDate ? 'border-rose-300' : 'border-slate-700'
+                }`}              />
               {errors.maturityDate ? <p className="mt-1 text-xs text-rose-500">{errors.maturityDate}</p> : null}
             </label>
           ) : null}
@@ -547,8 +560,9 @@ export default function InvestmentModal({ isOpen, onClose, onSuccess }) {
               name="purchaseDate"
               value={form.purchaseDate}
               onChange={handleChange}
-              className={`mt-1 w-full rounded-2xl border px-3 py-2 text-sm ${errors.purchaseDate ? 'border-rose-300' : 'border-slate-200'}`}
-            />
+                className={`mt-1 w-full rounded-2xl border bg-[#111111] px-3 py-2 text-sm text-white ${
+                  errors.purchaseDate ? 'border-rose-300' : 'border-slate-700'
+                }`}            />
             {errors.purchaseDate ? <p className="mt-1 text-xs text-rose-500">{errors.purchaseDate}</p> : null}
           </label>
 

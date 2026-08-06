@@ -252,12 +252,19 @@ export default function Holdings({ refreshToken }) {
   const handleConfirmSell = async () => {
     try {
       const price = confirmSellItem.livePrice ?? confirmSellItem.purchasePrice
-      await sellHolding(confirmSellItem.id, price)
+
+      await sellHolding(
+          confirmSellItem.id,
+          confirmSellItem.quantity,
+          price
+      )
       setConfirmSellItem(null)
       await load()
     } catch (err) {
       setError(getApiErrorMessage(err, 'We could not complete this sell action right now.'))
-    }
+    } finally {
+          setConfirmSellItem(null)
+       }
   }
 
   return (

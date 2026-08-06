@@ -18,8 +18,13 @@ export async function updatePortfolioItem(id, data) {
 export async function deletePortfolioItem(id) {
   return api.delete(`/portfolio-items/${id}`)
 }
-export async function sellHolding(id, pricePerUnit) {
-  return (await api.post(`/portfolio-items/${id}/sell`, { pricePerUnit })).data
+export async function sellHolding(id, quantity, pricePerUnit) {
+  return (
+    await api.post(`/portfolio-items/${id}/sell`, {
+      pricePerUnit,
+      quantity,
+    })
+  ).data
 }
 
 // Transactions
