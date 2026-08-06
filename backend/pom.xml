@@ -72,6 +72,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- spring-boot-starter-test provides JUnit Jupiter + Mockito (no need to declare them separately) -->
 	</dependencies>
 
@@ -122,6 +127,38 @@
 								</path>
 							</annotationProcessorPaths>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.12</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<configuration>
+							<includes>
+								<include>com/example/hsbcproject/**</include>
+							</includes>
+							<excludes>
+								<exclude>**/*$HibernateProxy*</exclude>
+								<exclude>**/*$HibernateInstantiator*</exclude>
+								<exclude>**/*$ByteBuddy*</exclude>
+								<exclude>**/*$MockitoMock$*</exclude>
+								<exclude>**/*$auxiliary$*</exclude>
+							</excludes>
+						</configuration>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
