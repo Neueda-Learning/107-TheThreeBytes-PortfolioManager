@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Build stage
-FROM maven:3.9.11-eclipse-temurin-25 AS build
+FROM maven:3.9.11-eclipse-temurin-21 AS build
 WORKDIR /app
 
 # Copy Maven wrapper and pom first to leverage layer caching
@@ -18,7 +18,7 @@ COPY src src
 RUN ./mvnw -q -DskipTests clean package
 
 # Runtime stage
-FROM eclipse-temurin:25-jre
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 # Copy the packaged application jar from the build stage
