@@ -32,6 +32,7 @@ services:
 
   # ─── Spring Boot Backend ───────────────────────────────────────────────────
   backend:
+    image: portfolio-backend:latest
     build:
       context: ./backend
       dockerfile: Dockerfile
